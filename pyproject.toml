@@ -1,0 +1,10 @@
+[project]
+name = "SolvingQAPWithEvolution"
+version = "0.1.0"
+description = "Project to solve the QAP (Quadratic Assignment Problem) with evolutionary algorithms"
+readme = "README.md"
+authors = ["Raoul Luqué <raoulsluque@gmail.com>"]
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.2.1",
+]
