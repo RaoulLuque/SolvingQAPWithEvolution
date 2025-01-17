@@ -9,19 +9,19 @@ from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_
     MUTATION_PROB
 from src.fitness_function import bulk_basic_fitness_function
 from src.recombine import recombine_chromosomes, order_crossing
-from src.selection import roulette_wheel_selection
+from src.selection import roulette_wheel_selection, tournament_selection_two_tournament
 from src.serialization import write_chromosome_to_file
 
 
 def main():
-    basic_evolution_loop(bulk_basic_fitness_function, roulette_wheel_selection, order_crossing, swap_mutation, TESTING)
+    basic_evolution_loop(bulk_basic_fitness_function, tournament_selection_two_tournament, order_crossing, swap_mutation, TESTING)
 
 
 def basic_evolution_loop(
     fitness_function: Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray],
     selection_function: Callable[[np.ndarray, np.ndarray], np.ndarray],
     recombination_function: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]],
-    mutation_function: Callable[[np.ndarray, float], np.ndarray],
+    mutation_function: Callable[[np.ndarray], np.ndarray],
     testing: bool
 ):
     (flow_matrix, distance_matrix) = read_data()
@@ -36,6 +36,9 @@ def basic_evolution_loop(
     for generation in range(NUMBER_OF_GENERATIONS):
         print(f"Generation {generation + 1}")
         print(f"Best fitness: {np.min(population_fitness)}")
+
+        number_of_unique_permutations = len(np.unique(population, axis=0))
+        print(f"Number of unique permutations: {number_of_unique_permutations}")
 
         # Check if the fittest individual is a valid solution
         assert check_if_chromosome_is_valid(population[np.argmin(population_fitness)])

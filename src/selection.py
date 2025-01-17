@@ -15,7 +15,7 @@ def roulette_wheel_selection(population: np.ndarray, population_fitness: np.ndar
     return population[np.random.choice(len(population), len(population), p=probabilities)]
 
 
-def tournament_selection(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
+def tournament_selection_two_tournament(population: np.ndarray, population_fitness: np.ndarray) -> np.ndarray:
     """
     A basic tournament selection algorithm.
     :param population: The population of chromosomes on which to perform selection
@@ -25,9 +25,16 @@ def tournament_selection(population: np.ndarray, population_fitness: np.ndarray,
     """
     selected_chromosomes = np.empty_like(population)
 
+    # selected_fighters_indexes = np.random.choice(len(population), 2 * len(population), replace=True)
+    # selected_fighters = population[selected_fighters_indexes]
+    # selected_fighters_fitness = population_fitness[selected_fighters_indexes]
+
     for i in range(len(population)):
-        tournament_indices = np.random.choice(len(population), tournament_size)
-        tournament_fitness = population_fitness[tournament_indices]
-        selected_chromosomes[i] = population[tournament_indices[np.argmin(tournament_fitness)]]
+        first_fighter, second_fighter = np.random.choice(len(population), 2, replace=False)
+        random_number = np.random.rand()
+        if population_fitness[first_fighter] > population_fitness[second_fighter]:
+            selected_chromosomes[i] = population[first_fighter] if random_number < 0.9 else population[second_fighter]
+        else:
+            selected_chromosomes[i] = population[second_fighter] if random_number < 0.9 else population[first_fighter]
 
     return selected_chromosomes
