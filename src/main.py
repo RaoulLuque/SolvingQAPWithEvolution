@@ -6,20 +6,21 @@ from src.chromosome import generate_random_chromosomes, check_if_chromosome_is_v
 from src.mutation import apply_mutation_to_population, swap_mutation
 from src.read_data import read_data
 from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES, \
-    MUTATION_PROB
+    MUTATION_PROB, TOURNAMENT_SIZE
 from src.fitness_function import bulk_basic_fitness_function
 from src.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover
-from src.selection import roulette_wheel_selection, tournament_selection_two_tournament
+from src.selection import roulette_wheel_selection, tournament_selection_two_tournament, \
+    tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk
 from src.serialization import write_chromosome_to_file
 
 
 def main():
-    basic_evolution_loop(bulk_basic_fitness_function, tournament_selection_two_tournament, partially_mapped_crossover, swap_mutation, TESTING)
+    basic_evolution_loop(bulk_basic_fitness_function, tournament_selection_k_tournament_bulk, partially_mapped_crossover, swap_mutation, TESTING)
 
 
 def basic_evolution_loop(
     fitness_function: Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray],
-    selection_function: Callable[[np.ndarray, np.ndarray], np.ndarray],
+    selection_function: Callable[[np.ndarray, np.ndarray, int], np.ndarray],
     recombination_function: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]],
     mutation_function: Callable[[np.ndarray], np.ndarray],
     testing: bool
@@ -50,8 +51,8 @@ def basic_evolution_loop(
         fitness_of_fittest_individual = population_fitness[index_of_fittest_individual]
 
         # Selection
-        selected_chromosomes = selection_function(population, population_fitness)
-
+        selected_chromosomes = selection_function(population, population_fitness, TOURNAMENT_SIZE)
+        # print(f"Number of unique selected chromosomes: {len(np.unique(selected_chromosomes, axis=0))}")
         # Recombine
         population = recombine_chromosomes(selected_chromosomes, recombination_function)
 
@@ -61,13 +62,10 @@ def basic_evolution_loop(
         # Evaluate the new population
         population_fitness = fitness_function(flow_matrix, distance_matrix, population)
 
-        # Force best individual into new population
-        if not np.min(population_fitness) == population_fitness[0]:
-            population[0] = fittest_individual
-            population_fitness[0] = fitness_of_fittest_individual
-        else:
-            population[1] = fittest_individual
-            population_fitness[1] = fitness_of_fittest_individual
+        # Force fittest individual to survive by replacing worst in new population with best from last population
+        worst_individual = np.argmax(population_fitness)
+        population[worst_individual] = fittest_individual
+        population_fitness[worst_individual] = fitness_of_fittest_individual
 
     print(f"Best solution: {population[np.argmin(population_fitness)]} with fitness {np.min(population_fitness)}")
     write_chromosome_to_file("best_result", population[np.argmin(population_fitness)], np.min(population_fitness))
