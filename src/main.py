@@ -3,8 +3,10 @@ from typing import Callable
 import numpy as np
 
 from src.chromosome import generate_random_chromosomes, check_if_chromosome_is_valid
+from src.mutation import apply_mutation_to_population, swap_mutation
 from src.read_data import read_data
-from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES
+from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES, \
+    MUTATION_PROB
 from src.fitness_function import bulk_basic_fitness_function
 from src.recombine import recombine_chromosomes, order_crossing
 from src.selection import roulette_wheel_selection
@@ -12,14 +14,15 @@ from src.serialization import write_chromosome_to_file
 
 
 def main():
-    basic_evolution_loop(bulk_basic_fitness_function, roulette_wheel_selection, order_crossing, TESTING)
+    basic_evolution_loop(bulk_basic_fitness_function, roulette_wheel_selection, order_crossing, swap_mutation, TESTING)
 
 
 def basic_evolution_loop(
-        fitness_function: Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray],
-        selection_function: Callable[[np.ndarray, np.ndarray], np.ndarray],
-        recombination_function: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]],
-        testing: bool
+    fitness_function: Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray],
+    selection_function: Callable[[np.ndarray, np.ndarray], np.ndarray],
+    recombination_function: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]],
+    mutation_function: Callable[[np.ndarray, float], np.ndarray],
+    testing: bool
 ):
     (flow_matrix, distance_matrix) = read_data()
 
@@ -37,14 +40,30 @@ def basic_evolution_loop(
         # Check if the fittest individual is a valid solution
         assert check_if_chromosome_is_valid(population[np.argmin(population_fitness)])
 
+        # Take the fittest individual to secure a spot in the new generation
+        index_of_fittest_individual = np.argmin(population_fitness)
+        fittest_individual = population[index_of_fittest_individual]
+        fitness_of_fittest_individual = population_fitness[index_of_fittest_individual]
+
         # Selection
         selected_chromosomes = selection_function(population, population_fitness)
 
         # Recombine
         population = recombine_chromosomes(selected_chromosomes, recombination_function)
-        assert check_if_chromosome_is_valid(population[0])
+
+        # Mutate
+        population = apply_mutation_to_population(population, mutation_function, MUTATION_PROB)
+
         # Evaluate the new population
         population_fitness = fitness_function(flow_matrix, distance_matrix, population)
+
+        # Force best individual into new population
+        if not np.min(population_fitness) == population_fitness[0]:
+            population[0] = fittest_individual
+            population_fitness[0] = fitness_of_fittest_individual
+        else:
+            population[1] = fittest_individual
+            population_fitness[1] = fitness_of_fittest_individual
 
     print(f"Best solution: {population[np.argmin(population_fitness)]} with fitness {np.min(population_fitness)}")
     write_chromosome_to_file("best_result", population[np.argmin(population_fitness)], np.min(population_fitness))
