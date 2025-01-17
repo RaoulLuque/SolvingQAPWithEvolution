@@ -66,8 +66,8 @@ def partially_mapped_crossover(parent_one: np.ndarray, parent_two: np.ndarray) -
     child_one[crossover_points[0]:crossover_points[1]] = parent_one[crossover_points[0]:crossover_points[1]]
     child_two[crossover_points[0]:crossover_points[1]] = parent_two[crossover_points[0]:crossover_points[1]]
 
-    perform_crossover(parent_two, child_one, crossover_points)
-    perform_crossover(parent_one, child_two, crossover_points)
+    perform_crossover_alt(parent_two, child_one, crossover_points)
+    perform_crossover_alt(parent_one, child_two, crossover_points)
 
     return child_one, child_two
 
@@ -88,6 +88,7 @@ def perform_crossover_alt(other_parent: np.ndarray, child: np.ndarray, crossover
     for i in range(crossover_points[0], crossover_points[1]):
         row_index = find_row_if_exists(child, other_parent[i])
         if row_index is not None:
+            row_index = find_row_if_exists(other_parent, child[i])
             while child[row_index][0] != 2:
                 row_index = find_row_if_exists(other_parent, child[i])
             child[row_index] = other_parent[i]
