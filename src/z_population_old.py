@@ -8,7 +8,7 @@ from src.config import NUMBER_OF_FACILITIES
 
 def generate_initial_population_with_fitness(
         population_size: int,
-        fitness_function: Callable[[np.ndarray, np.ndarray, np.ndarray], int],
+        fitness_function: Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray],
         flow_matrix: np.ndarray,
         distance_matrix: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
