@@ -7,13 +7,13 @@ from src.read_data import read_data
 from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE
 from src.population import generate_initial_population_with_fitness
 from src.fitness_function import basic_fitness_function, bulk_basic_fitness_function
-from src.recombine import two_point_crossover, recombine_chromosomes, partially_mapped_crossover
+from src.recombine import two_point_crossover, recombine_chromosomes, partially_mapped_crossover, order_crossing
 from src.selection import roulette_wheel_selection
 from src.serialization import write_chromosome_to_file
 
 
 def main():
-    basic_evolution_loop(basic_fitness_function, roulette_wheel_selection, cxPartialyMatched, TESTING)
+    basic_evolution_loop(basic_fitness_function, roulette_wheel_selection, order_crossing, TESTING)
 
 
 def basic_evolution_loop(
