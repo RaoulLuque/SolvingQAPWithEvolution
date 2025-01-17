@@ -17,6 +17,7 @@ def check_if_chromosome_is_valid(chromosome: np.ndarray) -> bool:
     """
     Check if the chromosome is valid.
     """
+    chromosome = chromosome.copy()
     chromosome.sort()
     if np.array_equal(chromosome, np.arange(chromosome.shape[0])):
         return True
