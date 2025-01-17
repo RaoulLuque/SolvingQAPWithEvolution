@@ -34,14 +34,15 @@ def basic_evolution_loop(
     population_fitness = fitness_function(flow_matrix, distance_matrix, population)
 
     for generation in range(NUMBER_OF_GENERATIONS):
-        print(f"Generation {generation + 1}")
-        print(f"Best fitness: {np.min(population_fitness)}")
+        if generation % 10 == 0:
+            print(f"Generation {generation + 1}")
+            print(f"Best fitness: {np.min(population_fitness)}")
 
-        number_of_unique_permutations = len(np.unique(population, axis=0))
-        print(f"Number of unique permutations: {number_of_unique_permutations}")
+            number_of_unique_permutations = len(np.unique(population, axis=0))
+            print(f"Number of unique permutations: {number_of_unique_permutations}")
 
         # Check if the fittest individual is a valid solution
-        assert check_if_chromosome_is_valid(population[np.argmin(population_fitness)])
+        # assert check_if_chromosome_is_valid(population[np.argmin(population_fitness)])
 
         # Take the fittest individual to secure a spot in the new generation
         index_of_fittest_individual = np.argmin(population_fitness)

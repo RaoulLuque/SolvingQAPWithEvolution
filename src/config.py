@@ -2,7 +2,7 @@
 POPULATION_SIZE: int = 300
 NUMBER_OF_GENERATIONS: int = 1000
 NUMBER_OF_FACILITIES: int = 256
-MUTATION_PROB: float = 0.2
+MUTATION_PROB: float = 0.3
 
 # Testing
 TESTING: bool = False

@@ -25,10 +25,6 @@ def tournament_selection_two_tournament(population: np.ndarray, population_fitne
     """
     selected_chromosomes = np.empty_like(population)
 
-    # selected_fighters_indexes = np.random.choice(len(population), 2 * len(population), replace=True)
-    # selected_fighters = population[selected_fighters_indexes]
-    # selected_fighters_fitness = population_fitness[selected_fighters_indexes]
-
     for i in range(len(population)):
         first_fighter, second_fighter = np.random.choice(len(population), 2, replace=False)
         random_number = np.random.rand()
@@ -38,3 +34,22 @@ def tournament_selection_two_tournament(population: np.ndarray, population_fitne
             selected_chromosomes[i] = population[second_fighter] if random_number < 0.9 else population[first_fighter]
 
     return selected_chromosomes
+
+
+def tournament_selection_two_tournament_bulk(population: np.ndarray, population_fitness: np.ndarray) -> np.ndarray:
+    """
+    A basic tournament selection algorithm.
+    :param population: The population of chromosomes on which to perform selection
+    :param population_fitness: The population's fitness values
+    :param tournament_size: The size of the tournament
+    :return: A numpy array of size len(population) containing the selected chromosomes
+    """
+    selected_fighters_indexes = np.random.choice(len(population), 2 * len(population), replace=True)
+    selected_fighters = population[selected_fighters_indexes]
+    selected_fighters_fitness = population_fitness[selected_fighters_indexes]
+
+    winners_mask = (selected_fighters_fitness[::2] > selected_fighters_fitness[1::2]) & (
+                np.random.rand(len(population)) < 0.9)
+    winners = np.where(winners_mask[:, np.newaxis], selected_fighters[::2], selected_fighters[1::2])
+
+    return winners
