@@ -1,6 +1,17 @@
 import numpy as np
 
 
+def basic_fitness_function(flow_matrix: np.ndarray, distance_matrix: np.ndarray, chromosome: np.ndarray) -> float:
+    """
+    Calculate the fitness value of a chromosome.
+    :param flow_matrix: Two-dimensional numpy array representing the flow matrix
+    :param distance_matrix: Two-dimensional numpy array representing the distance matrix
+    :param chromosome: One-dimensional numpy array representing the chromosome
+    :return: The fitness value of the chromosome
+    """
+    return np.sum(flow_matrix * distance_matrix[chromosome[:, np.newaxis], chromosome[np.newaxis, :]])
+
+
 def bulk_basic_fitness_function(flow_matrix: np.ndarray, distance_matrix: np.ndarray, chromosomes: np.ndarray) -> np.ndarray:
     """
     Calculate the fitness value of multiple chromosomes at once.

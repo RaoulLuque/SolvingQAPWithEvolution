@@ -20,8 +20,8 @@ def create_children_by_copying_crossover_part_from_parents(parent_one: np.ndarra
     crossover_points = np.random.choice(chromosome_length, 2, replace=False)
     crossover_points.sort()
 
-    child_one = np.copy(parent_one)
-    child_two = np.copy(parent_two)
+    child_one = -1 * np.ones_like(parent_one)
+    child_two = -1 * np.ones_like(parent_two)
 
     child_one[crossover_points[0]:crossover_points[1]] = parent_one[crossover_points[0]:crossover_points[1]]
     child_two[crossover_points[0]:crossover_points[1]] = parent_two[crossover_points[0]:crossover_points[1]]
@@ -55,4 +55,38 @@ def order_crossing(parent_one: np.ndarray, parent_two: np.ndarray) -> tuple[np.n
         child_two_parent_index = (child_two_parent_index + 1) % chromosome_length
 
         child_index = (child_index + 1) % chromosome_length
+    return child_one, child_two
+
+
+def partially_mapped_crossover(parent_one: np.ndarray, parent_two: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Perform partially mapped crossover on the two parents.
+    """
+    chromosome_length = parent_one.shape[0]
+
+    child_one, child_two, crossover_points = create_children_by_copying_crossover_part_from_parents(parent_one, parent_two)
+
+    parent_one_list = list(parent_one)
+    parent_two_list = list(parent_two)
+
+    # Perform the crossover
+    for i in range(crossover_points[0], crossover_points[1]):
+        if parent_two[i] not in child_one[crossover_points[0]:crossover_points[1]]:
+            index = parent_two_list.index(child_one[i])
+            while crossover_points[0] <= index < crossover_points[1]:
+                index = parent_two_list.index(child_one[index])
+            child_one[index] = parent_two[i]
+
+        if parent_one[i] not in child_two[crossover_points[0]:crossover_points[1]]:
+            index = parent_one_list.index(child_two[i])
+            while crossover_points[0] <= index < crossover_points[1]:
+                index = parent_one_list.index(child_two[index])
+            child_two[index] = parent_one[i]
+
+    mask = child_one[:] == -1
+    child_one[mask] = parent_two[mask]
+
+    mask = child_two[:] == -1
+    child_two[mask] = parent_one[mask]
+
     return child_one, child_two

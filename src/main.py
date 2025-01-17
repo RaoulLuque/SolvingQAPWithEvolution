@@ -8,13 +8,13 @@ from src.read_data import read_data
 from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES, \
     MUTATION_PROB
 from src.fitness_function import bulk_basic_fitness_function
-from src.recombine import recombine_chromosomes, order_crossing
+from src.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover
 from src.selection import roulette_wheel_selection, tournament_selection_two_tournament
 from src.serialization import write_chromosome_to_file
 
 
 def main():
-    basic_evolution_loop(bulk_basic_fitness_function, tournament_selection_two_tournament, order_crossing, swap_mutation, TESTING)
+    basic_evolution_loop(bulk_basic_fitness_function, tournament_selection_two_tournament, partially_mapped_crossover, swap_mutation, TESTING)
 
 
 def basic_evolution_loop(
