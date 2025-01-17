@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def roulette_wheel_selection(population: np.ndarray, population_fitness: np.ndarray) -> np.ndarray:
+def roulette_wheel_selection(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
     """
     A basic roulette-wheel selection algorithm also known as fitness-proportionate selection.
     It selects chromosomes based on their fitness values, see https://en.wikipedia.org/wiki/Fitness_proportionate_selection
@@ -15,7 +15,7 @@ def roulette_wheel_selection(population: np.ndarray, population_fitness: np.ndar
     return population[np.random.choice(len(population), len(population), p=probabilities)]
 
 
-def tournament_selection_two_tournament(population: np.ndarray, population_fitness: np.ndarray) -> np.ndarray:
+def tournament_selection_two_tournament(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
     """
     A basic tournament selection algorithm.
     :param population: The population of chromosomes on which to perform selection
@@ -36,7 +36,7 @@ def tournament_selection_two_tournament(population: np.ndarray, population_fitne
     return selected_chromosomes
 
 
-def tournament_selection_two_tournament_bulk(population: np.ndarray, population_fitness: np.ndarray) -> np.ndarray:
+def tournament_selection_two_tournament_bulk(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
     """
     A basic tournament selection algorithm.
     :param population: The population of chromosomes on which to perform selection
@@ -51,5 +51,23 @@ def tournament_selection_two_tournament_bulk(population: np.ndarray, population_
     winners_mask = (selected_fighters_fitness[::2] > selected_fighters_fitness[1::2]) & (
                 np.random.rand(len(population)) < 0.9)
     winners = np.where(winners_mask[:, np.newaxis], selected_fighters[::2], selected_fighters[1::2])
+
+    return winners
+
+
+def tournament_selection_k_tournament_bulk(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
+    """
+    A basic tournament selection algorithm.
+    :param population: The population of chromosomes on which to perform selection
+    :param population_fitness: The population's fitness values
+    :param tournament_size: The size of the tournament
+    :return: A numpy array of size len(population) containing the selected chromosomes
+    """
+    selected_fighters_indexes = np.random.choice(len(population), tournament_size * len(population), replace=True)
+    selected_fighters = population[selected_fighters_indexes]
+    selected_fighters_fitness = population_fitness[selected_fighters_indexes]
+
+    winners_mask = (selected_fighters_fitness[::tournament_size] > selected_fighters_fitness[1::tournament_size]) # & (np.random.rand(len(population)) < 0.9)
+    winners = np.where(winners_mask[:, np.newaxis], selected_fighters[::tournament_size], selected_fighters[1::tournament_size])
 
     return winners
