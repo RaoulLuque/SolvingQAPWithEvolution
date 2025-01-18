@@ -8,14 +8,14 @@ from src.read_data import read_data
 from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES, \
     MUTATION_PROB, TOURNAMENT_SIZE
 from src.fitness_function import bulk_basic_fitness_function
-from src.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover
+from src.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover, uniform_like_crossover_two
 from src.selection import roulette_wheel_selection, tournament_selection_two_tournament, \
     tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk
 from src.serialization import write_chromosome_to_file
 
 
 def main():
-    basic_evolution_loop(bulk_basic_fitness_function, tournament_selection_k_tournament_bulk, partially_mapped_crossover, swap_mutation, TESTING)
+    basic_evolution_loop(bulk_basic_fitness_function, roulette_wheel_selection, partially_mapped_crossover, swap_mutation, TESTING)
 
 
 def basic_evolution_loop(
