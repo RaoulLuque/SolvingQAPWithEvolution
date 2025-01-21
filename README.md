@@ -10,8 +10,8 @@ The best results are in descending order, that is, the best result is shown on t
 Functions used:
 Variant: standard
 Fitness function: bulk_basic
-Selection function: tournament_k_bulk_no_dups
-Recombination function: uniform_like
+Selection function: roulette_wheel
+Recombination function: partially_mapped
 Mutation function: swap
 
 Hyperparameters:

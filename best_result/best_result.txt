@@ -1,8 +1,8 @@
 Functions used:
 Variant: standard
 Fitness function: bulk_basic
-Selection function: tournament_k_bulk_no_dups
-Recombination function: uniform_like
+Selection function: roulette_wheel
+Recombination function: partially_mapped
 Mutation function: swap
 
 Hyperparameters:
