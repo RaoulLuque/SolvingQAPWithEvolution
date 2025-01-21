@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import ndarray
 
 from src.serialization import write_chromosome_to_file
 
