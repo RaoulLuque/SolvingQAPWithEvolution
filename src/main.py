@@ -16,15 +16,21 @@ from src.selection import roulette_wheel_selection, tournament_selection_two_tou
     tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk
 from src.serialization import write_chromosome_to_file
 
+variants = ["standard"]
+fitness_functions = ["bulk_basic"]
+selection_functions = ["roulette_wheel", "tournament_two", "tournament_two_bulk", "tournament_k_bulk", "tournament_k_bulk_no_dups"]
+recombination_functions = ["order", "uniform_like", "partially_mapped"]
+mutation_functions = ["swap"]
+
 
 def main():
     # Set config
     variant = "standard"
     fitness_function = "bulk_basic"
-    selection_function = "roulette_wheel"
+    selection_function = "tournament_k_bulk_no_dups"
     recombination_function = "partially_mapped"
     mutation_function = "swap"
-    date = datetime.datetime.now().strftime('%Y_%m_%dT%H:%M:%S')
+    date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
     translate_strings_to_functions(fitness_function, selection_function, recombination_function, mutation_function)
 
@@ -138,6 +144,18 @@ def log_results(variant, fitness_function: str, selection_function: str, recombi
         file.write(f"Selection function: {selection_function}\n")
         file.write(f"Recombination function: {recombination_function}\n")
         file.write(f"Mutation function: {mutation_function}\n")
+        file.write("\n")
+
+        file.write("Hyperparameters:\n")
+        file.write(f"Population size: {POPULATION_SIZE}\n")
+        file.write(f"Number of generations: {NUMBER_OF_GENERATIONS}\n")
+        file.write(f"Number of facilities: {NUMBER_OF_FACILITIES}\n")
+        file.write(f"Mutation probability: {MUTATION_PROB}\n")
+        file.write(f"Tournament size: {TOURNAMENT_SIZE}\n")
+        file.write(f"Testing: {TESTING}\n")
+        file.write("\n")
+
+        file.write("Results:\n")
         file.write(f"Best fitness: {best_fitness}\n")
         file.write(f"Total time: {total}\n")
         file.write(f"Best chromosome: \n")
