@@ -1,3 +1,4 @@
+Functions used:
 Variant: standard
 Fitness function: bulk_basic
 Selection function: roulette_wheel
