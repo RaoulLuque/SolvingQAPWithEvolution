@@ -14,7 +14,8 @@ from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_
 from src.fitness_function import bulk_basic_fitness_function
 from src.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover, uniform_like_crossover_two
 from src.selection import roulette_wheel_selection, tournament_selection_two_tournament, \
-    tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk
+    tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk, \
+    tournament_selection_k_tournament_bulk_no_duplicates
 from src.serialization import write_chromosome_to_file
 
 variants = ["standard", "baldwinian", "lamarckian"]
@@ -27,22 +28,22 @@ mutation_functions = ["swap"]
 def main():
     # Set config
     variant = "standard"
-    fitness_function = "bulk_basic"
-    selection_function = "tournament_k_bulk_no_dups"
-    recombination_function = "uniform_like"
-    mutation_function = "swap"
+    fitness_function_str = "bulk_basic"
+    selection_function_str = "tournament_k_bulk_no_dups"
+    recombination_function_str = "uniform_like"
+    mutation_function_str = "swap"
     date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
-    translate_strings_to_functions(variant, fitness_function, selection_function, recombination_function, mutation_function)
+    fitness_function, selection_function, recombination_function, mutation_function = translate_strings_to_functions(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str)
 
     start_time = time.time()
-    best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(variant, bulk_basic_fitness_function, roulette_wheel_selection, partially_mapped_crossover, swap_mutation, TESTING)
+    best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(variant, fitness_function, selection_function, recombination_function, mutation_function, TESTING)
     end_time = time.time()
 
     total = end_time - start_time
     print(f"Total time: {total}")
 
-    log_results(variant, fitness_function, selection_function, recombination_function, mutation_function, best_chromosome, best_fitness, total, date, time_per_generation)
+    log_results(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, best_chromosome, best_fitness, total, date, time_per_generation)
     plot_results(best_fitness_each_generation, variant, date)
 
 
@@ -134,8 +135,10 @@ def basic_evolution_loop(
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
 
-def translate_strings_to_functions(variant: str, fitness_function: str, selection_function: str, recombination_function: str, mutation_function: str) -> tuple[Callable[[ndarray, ndarray, ndarray], ndarray],Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
-    match fitness_function:
+def translate_strings_to_functions(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str) -> tuple[Callable[[ndarray, ndarray, ndarray], ndarray],Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
+    fitness_function, selection_function, recombination_function, mutation_function = None, None, None, None
+
+    match fitness_function_str:
         case "bulk_basic":
             match variant:
                 case "standard":
@@ -145,7 +148,7 @@ def translate_strings_to_functions(variant: str, fitness_function: str, selectio
                 case "lamarckian":
                     fitness_function = bulk_basic_fitness_function_lamarckian
 
-    match selection_function:
+    match selection_function_str:
         case "roulette_wheel":
             selection_function = roulette_wheel_selection
         case "tournament_two":
@@ -154,17 +157,23 @@ def translate_strings_to_functions(variant: str, fitness_function: str, selectio
             selection_function = tournament_selection_two_tournament_bulk
         case "tournament_k_bulk":
             selection_function = tournament_selection_k_tournament_bulk
+        case "tournament_k_bulk_no_dups":
+            selection_function = tournament_selection_k_tournament_bulk_no_duplicates
 
-    match recombination_function:
+    match recombination_function_str:
         case "order":
             recombination_function = order_crossing
         case "uniform_like":
             recombination_function = uniform_like_crossover_two
         case "partially_mapped":
             recombination_function = partially_mapped_crossover
-    match mutation_function:
+
+    match mutation_function_str:
         case "swap":
             mutation_function = swap_mutation
+
+    if not all([fitness_function, selection_function, recombination_function, mutation_function]):
+        raise ValueError("Invalid function string provided")
 
     return fitness_function, selection_function, recombination_function, mutation_function
 
