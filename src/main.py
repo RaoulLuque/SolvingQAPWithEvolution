@@ -29,11 +29,11 @@ def main():
     variant = "standard"
     fitness_function = "bulk_basic"
     selection_function = "tournament_k_bulk_no_dups"
-    recombination_function = "partially_mapped"
+    recombination_function = "uniform_like"
     mutation_function = "swap"
     date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
-    translate_strings_to_functions(fitness_function, selection_function, recombination_function, mutation_function)
+    translate_strings_to_functions(variant, fitness_function, selection_function, recombination_function, mutation_function)
 
     start_time = time.time()
     best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(variant, bulk_basic_fitness_function, roulette_wheel_selection, partially_mapped_crossover, swap_mutation, TESTING)
@@ -134,10 +134,16 @@ def basic_evolution_loop(
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
 
-def translate_strings_to_functions(fitness_function: str, selection_function: str, recombination_function: str, mutation_function: str) -> tuple[Callable[[ndarray, ndarray, ndarray], ndarray],Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
+def translate_strings_to_functions(variant: str, fitness_function: str, selection_function: str, recombination_function: str, mutation_function: str) -> tuple[Callable[[ndarray, ndarray, ndarray], ndarray],Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
     match fitness_function:
         case "bulk_basic":
-            fitness_function = bulk_basic_fitness_function
+            match variant:
+                case "standard":
+                    fitness_function = bulk_basic_fitness_function
+                case "baldwinian":
+                    fitness_function = bulk_basic_fitness_function_baldwinian
+                case "lamarckian":
+                    fitness_function = bulk_basic_fitness_function_lamarckian
 
     match selection_function:
         case "roulette_wheel":
