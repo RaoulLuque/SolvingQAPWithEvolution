@@ -27,6 +27,6 @@ def swap_mutation(chromosome: np.ndarray) -> np.ndarray:
     """
     index1, index2 = np.random.choice(chromosome.shape[0], 2, replace=False)
     chromosome_entry_one = chromosome[index1]
-    chromosome_entry_two = chromosome[index2]
-    chromosome[index1], chromosome[index2] = chromosome_entry_two, chromosome_entry_one
+    chromosome[index1] = chromosome[index2]
+    chromosome[index2] = chromosome_entry_one
     return chromosome
