@@ -1,3 +1,4 @@
+import random
 from typing import Callable
 
 import numpy as np
@@ -90,3 +91,45 @@ def partially_mapped_crossover(parent_one: np.ndarray, parent_two: np.ndarray) -
     child_two[mask] = parent_one[mask]
 
     return child_one, child_two
+
+
+def uniform_like_crossover_two(parent_one: np.ndarray, parent_two: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Performs Uniform-Like Crossover (ULX) on two parent chromosomes to generate two children.
+    """
+    child_one = uniform_like_crossover(parent_one, parent_two)
+    child_two = uniform_like_crossover(parent_one, parent_two)
+
+    return child_one, child_two
+
+
+def uniform_like_crossover(parent_one: np.ndarray, parent_two: np.ndarray) -> np.ndarray:
+    """
+    Generates a child chromosome from two parents using the ULX algorithm.
+    """
+    size = len(parent_one)
+    unassigned_indexes = []
+    child = np.full(size, -1, dtype=int)  # Initialize child with -1
+
+    # First pass: Inherit directly when parents agree or make a valid random choice
+    for i in range(size):
+        if parent_one[i] == parent_two[i]:
+            child[i] = parent_one[i]
+        elif parent_one[i] not in child and parent_two[i] not in child:
+            child[i] = random.choice([parent_one[i], parent_two[i]])
+        else:
+            unassigned_indexes.append(i)
+
+    # Collect unassigned chromosomes
+    assigned_chromosomes = set(child[child != -1])
+    unassigned_chromosomes = [chrom for chrom in range(size) if chrom not in assigned_chromosomes]
+
+    # Shuffle unassigned elements for random assignment
+    random.shuffle(unassigned_indexes)
+    random.shuffle(unassigned_chromosomes)
+
+    # Assign remaining chromosomes
+    for index, chromosome in zip(unassigned_indexes, unassigned_chromosomes):
+        child[index] = chromosome
+
+    return child

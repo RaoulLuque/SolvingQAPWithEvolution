@@ -28,7 +28,7 @@ def main():
     variant = "standard"
     fitness_function = "bulk_basic"
     selection_function = "tournament_k_bulk_no_dups"
-    recombination_function = "partially_mapped"
+    recombination_function = "uniform_like"
     mutation_function = "swap"
     date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
@@ -68,7 +68,7 @@ def basic_evolution_loop(
 
     for generation in range(NUMBER_OF_GENERATIONS):
         start_time = time.time()
-        if generation % 10 == 0:
+        if generation % 25 == 0:
             print(f"Generation {generation + 1}")
             print(f"Best fitness: {np.min(population_fitness)}")
 
@@ -89,7 +89,24 @@ def basic_evolution_loop(
 
         # Selection
         selected_chromosomes = selection_function(population, population_fitness, TOURNAMENT_SIZE)
-        # print(f"Number of unique selected chromosomes: {len(np.unique(selected_chromosomes, axis=0))}")
+
+        # Check if parents for one child are equal in which case replace those
+        alternative_selected_chromosomes = []
+        alternative_chromosome_index = 0
+        for i in range(0, len(selected_chromosomes), 2):
+            while np.array_equal(selected_chromosomes[i], selected_chromosomes[i + 1]):
+                if len(alternative_selected_chromosomes) == 0:
+                    # This should only be encountered once
+                    alternative_selected_chromosomes = selection_function(population, population_fitness, TOURNAMENT_SIZE)
+                if alternative_chromosome_index != len(alternative_selected_chromosomes):
+                    selected_chromosomes[i + 1] = alternative_selected_chromosomes[alternative_chromosome_index]
+                    alternative_chromosome_index += 1
+                else:
+                    alternative_selected_chromosomes = selection_function(population, population_fitness, TOURNAMENT_SIZE)
+                    alternative_chromosome_index = 0
+                    selected_chromosomes[i + 1] = alternative_selected_chromosomes[alternative_chromosome_index]
+                    alternative_chromosome_index += 1
+
         # Recombine
         population = recombine_chromosomes(selected_chromosomes, recombination_function)
 
@@ -161,6 +178,7 @@ def log_results(
 
     file_path = f"results/{date}_{variant}.txt"
     with open(file_path, "w") as file:
+        file.write("Functions used:\n")
         file.write(f"Variant: {variant}\n")
         file.write(f"Fitness function: {fitness_function}\n")
         file.write(f"Selection function: {selection_function}\n")
