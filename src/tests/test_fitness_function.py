@@ -9,7 +9,7 @@ def test_bulk_basic_fitness_function():
     flow_matrix, distance_matrix = read_data()
     population = generate_random_chromosomes(1, 256)
 
-    fitness_values = bulk_basic_fitness_function(flow_matrix, distance_matrix, population)
+    fitness_values = bulk_basic_fitness_function(flow_matrix, distance_matrix, population)[1]
     # assert len(fitness_values) == 100
 
     expected = np.empty_like(fitness_values)
