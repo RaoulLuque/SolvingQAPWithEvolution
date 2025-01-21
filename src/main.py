@@ -75,8 +75,9 @@ def basic_evolution_loop(
             number_of_unique_permutations = len(np.unique(population, axis=0))
             print(f"Number of unique permutations: {number_of_unique_permutations}")
 
-            average_time_per_generation_per_individual = np.mean(time_per_generation) / POPULATION_SIZE
-            print(f"Average time per generation per individual: {average_time_per_generation_per_individual}")
+            if len(time_per_generation) != 0:
+                average_time_per_generation_per_individual = np.mean(time_per_generation) / POPULATION_SIZE
+                print(f"Average time per generation per individual: {average_time_per_generation_per_individual}")
 
         # Check if the fittest individual is a valid solution
         # assert check_if_chromosome_is_valid(population[np.argmin(population_fitness)])
@@ -111,7 +112,6 @@ def basic_evolution_loop(
         time_per_generation.append(end_time - start_time)
 
     print(f"Best solution: {population[np.argmin(population_fitness)]} with fitness {np.min(population_fitness)}")
-    write_chromosome_to_file("best_result", population[np.argmin(population_fitness)], np.min(population_fitness))
 
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
