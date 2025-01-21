@@ -5,7 +5,7 @@ This repository documents the progress of developing a evolutionary algorithm to
 
 The best results are in descending order, that is, the best result is shown on top.
 
-## 44848506
+## [44848506](https://github.com/RaoulLuque/SolvingQAPWithEvolution/tree/48a3a2939e831397f5e634c0fc9c8fdbe18e27cb)
 ```text
 Functions used:
 Variant: lamarckian
@@ -27,6 +27,8 @@ Best fitness: 44848506
 Total time: 299.84 seconds
 Average time per generation per individual: 1134.421 milliseconds
 ```
+
+For the exact result see [best_result/best_result.txt](https://github.com/RaoulLuque/SolvingQAPWithEvolution/blob/48a3a2939e831397f5e634c0fc9c8fdbe18e27cb/best_result/best_result.txt) from commit 48a3a29.
 
 ## [46892802](https://github.com/RaoulLuque/SolvingQAPWithEvolution/tree/831c70e6a3e51d0eaf5ef58764b3edae08fe07fe)
 ```text
