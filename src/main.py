@@ -11,12 +11,12 @@ from src.mutation import apply_mutation_to_population, swap_mutation
 from src.read_data import read_data
 from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES, \
     MUTATION_PROB, TOURNAMENT_SIZE
-from src.fitness_function import bulk_basic_fitness_function
+from src.fitness_function import bulk_basic_fitness_function, bulk_basic_fitness_function_baldwinian, \
+    bulk_basic_fitness_function_lamarckian
 from src.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover, uniform_like_crossover_two
 from src.selection import roulette_wheel_selection, tournament_selection_two_tournament, \
     tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk, \
     tournament_selection_k_tournament_bulk_no_duplicates
-from src.serialization import write_chromosome_to_file
 
 variants = ["standard", "baldwinian", "lamarckian"]
 fitness_functions = ["bulk_basic"]
@@ -27,10 +27,10 @@ mutation_functions = ["swap"]
 
 def main():
     # Set config
-    variant = "standard"
+    variant = "lamarckian"
     fitness_function_str = "bulk_basic"
-    selection_function_str = "tournament_k_bulk_no_dups"
-    recombination_function_str = "uniform_like"
+    selection_function_str = "roulette_wheel"
+    recombination_function_str = "partially_mapped"
     mutation_function_str = "swap"
     date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
@@ -49,7 +49,7 @@ def main():
 
 def basic_evolution_loop(
     variant: str,
-    fitness_function: Callable[[ndarray, ndarray, ndarray], ndarray],
+    fitness_function: Callable[[ndarray, ndarray, ndarray, bool], tuple[ndarray, ndarray]],
     selection_function: Callable[[ndarray, ndarray, int], ndarray],
     recombination_function: Callable[[ndarray, ndarray], tuple[ndarray, ndarray]],
     mutation_function: Callable[[ndarray], ndarray],
@@ -65,12 +65,12 @@ def basic_evolution_loop(
         distance_matrix = distance_matrix[:TESTING_SIZE, :TESTING_SIZE]
 
     population = generate_random_chromosomes(POPULATION_SIZE, NUMBER_OF_FACILITIES)
-    population_fitness = fitness_function(flow_matrix, distance_matrix, population)
+    population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, False)
     best_fitness_each_generation.append(np.min(population_fitness))
 
     for generation in range(NUMBER_OF_GENERATIONS):
         start_time = time.time()
-        if generation % 25 == 0:
+        if generation % (NUMBER_OF_GENERATIONS // 10) == 0:
             print(f"Generation {generation + 1}")
             print(f"Best fitness: {np.min(population_fitness)}")
 
@@ -115,8 +115,11 @@ def basic_evolution_loop(
         # Mutate
         population = apply_mutation_to_population(population, mutation_function, MUTATION_PROB)
 
-        # Evaluate the new population
-        population_fitness = fitness_function(flow_matrix, distance_matrix, population)
+        # Evaluate the new population (and possibly apply Lamarckian evolution)
+        if generation == NUMBER_OF_GENERATIONS - 1:
+            population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, final=True)
+        else:
+            population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, False)
 
         # Force the fittest individual to survive by replacing worst in new population with best from last population
         worst_individual = np.argmax(population_fitness)
