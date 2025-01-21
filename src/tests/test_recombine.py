@@ -6,7 +6,8 @@ from src.recombine import partially_mapped_crossover, order_crossing
 
 
 def test_order_crossing():
-
+    mocked_random_choice = np.array([0, 7])
+    with patch("numpy.random.choice", return_value=mocked_random_choice):
         parent_one = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         parent_two = np.array([7, 8, 9, 6, 5, 4, 3, 2, 1, 0])
         expected_child_one = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
