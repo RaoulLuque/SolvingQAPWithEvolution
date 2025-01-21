@@ -29,7 +29,7 @@ def main():
     variant = "standard"
     fitness_function = "bulk_basic"
     selection_function = "tournament_k_bulk_no_dups"
-    recombination_function = "uniform_like"
+    recombination_function = "partially_mapped"
     mutation_function = "swap"
     date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
@@ -175,7 +175,11 @@ def log_results(
         date: str,
         time_per_generation: list[float],
 ):
-    average_time_per_generation_per_individual = np.mean(time_per_generation) / POPULATION_SIZE
+    average_time_per_generation_per_individual = (np.mean(time_per_generation) / POPULATION_SIZE) * 1000
+
+    # Cutoff total at 2 decimals
+    total = round(total, 2)
+    average_time_per_generation_per_individual = round(average_time_per_generation_per_individual, 3)
 
     file_path = f"results/{date}_{variant}.txt"
     with open(file_path, "w") as file:
@@ -198,8 +202,8 @@ def log_results(
 
         file.write("Results:\n")
         file.write(f"Best fitness: {best_fitness}\n")
-        file.write(f"Total time: {total}\n")
-        file.write(f"Average time per generation per individual: {average_time_per_generation_per_individual}\n")
+        file.write(f"Total time: {total} seconds\n")
+        file.write(f"Average time per generation per individual: {average_time_per_generation_per_individual} milliseconds\n")
         file.write(f"Best chromosome: \n")
         np.savetxt(f"{file_path}", best_chromosome, fmt="%d", delimiter=",")
 
