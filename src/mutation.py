@@ -1,7 +1,8 @@
 import numpy as np
+from numpy import ndarray
 
 
-def apply_mutation_to_population(population: np.ndarray, mutation_function: callable, mutation_rate: float) -> np.ndarray:
+def apply_mutation_to_population(population: ndarray, mutation_function: callable, mutation_rate: float) -> ndarray:
     """
     Apply a mutation function to a population with a given mutation rate.
     :param population: The population to mutate
@@ -19,7 +20,7 @@ def apply_mutation_to_population(population: np.ndarray, mutation_function: call
     return population
 
 
-def swap_mutation(chromosome: np.ndarray) -> np.ndarray:
+def swap_mutation(chromosome: ndarray) -> ndarray:
     """
     Perform a swap mutation on the chromosome.
     :param chromosome: The chromosome to mutate

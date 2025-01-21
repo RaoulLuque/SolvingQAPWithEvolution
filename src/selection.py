@@ -1,7 +1,8 @@
 import numpy as np
+from numpy import ndarray
 
 
-def roulette_wheel_selection(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
+def roulette_wheel_selection(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
     A basic roulette-wheel selection algorithm also known as fitness-proportionate selection.
     It selects chromosomes based on their fitness values, see https://en.wikipedia.org/wiki/Fitness_proportionate_selection
@@ -15,7 +16,7 @@ def roulette_wheel_selection(population: np.ndarray, population_fitness: np.ndar
     return population[np.random.choice(len(population), len(population), p=probabilities)]
 
 
-def tournament_selection_two_tournament(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
+def tournament_selection_two_tournament(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
     A basic tournament selection algorithm.
     :param population: The population of chromosomes on which to perform selection
@@ -36,7 +37,7 @@ def tournament_selection_two_tournament(population: np.ndarray, population_fitne
     return selected_chromosomes
 
 
-def tournament_selection_two_tournament_bulk(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
+def tournament_selection_two_tournament_bulk(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
     A basic tournament selection algorithm.
     :param population: The population of chromosomes on which to perform selection
@@ -55,7 +56,7 @@ def tournament_selection_two_tournament_bulk(population: np.ndarray, population_
     return winners
 
 
-def tournament_selection_k_tournament_bulk(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
+def tournament_selection_k_tournament_bulk(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
     A basic tournament selection algorithm.
     :param population: The population of chromosomes on which to perform selection
@@ -73,7 +74,7 @@ def tournament_selection_k_tournament_bulk(population: np.ndarray, population_fi
     return winners
 
 
-def tournament_selection_k_tournament_bulk_no_duplicates(population: np.ndarray, population_fitness: np.ndarray, tournament_size: int) -> np.ndarray:
+def tournament_selection_k_tournament_bulk_no_duplicates(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
     A basic tournament selection algorithm.
     :param population: The population of chromosomes on which to perform selection

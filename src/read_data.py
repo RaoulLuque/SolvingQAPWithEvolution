@@ -1,7 +1,8 @@
 import numpy as np
+from numpy import ndarray
 
 
-def read_data() -> tuple[np.ndarray, np.ndarray]:
+def read_data() -> tuple[ndarray, ndarray]:
     """
     Read the data from the data/tai256c.dat file and return the flow and distance matrices.
     :return: A tuple containing the flow and distance matrices

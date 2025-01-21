@@ -2,9 +2,10 @@ import random
 from typing import Callable
 
 import numpy as np
+from numpy import ndarray
 
 
-def recombine_chromosomes(selected_chromosomes: np.ndarray, recombination_function: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]]) -> np.ndarray:
+def recombine_chromosomes(selected_chromosomes: ndarray, recombination_function: Callable[[ndarray, ndarray], tuple[ndarray, ndarray]]) -> ndarray:
     new_population = np.empty_like(selected_chromosomes)
     for i in range(0, len(selected_chromosomes), 2):
         child_one, child_two = recombination_function(selected_chromosomes[i], selected_chromosomes[i + 1])
@@ -13,7 +14,7 @@ def recombine_chromosomes(selected_chromosomes: np.ndarray, recombination_functi
     return new_population
 
 
-def create_children_by_copying_crossover_part_from_parents(parent_one: np.ndarray, parent_two: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def create_children_by_copying_crossover_part_from_parents(parent_one: ndarray, parent_two: ndarray) -> tuple[ndarray, ndarray, ndarray]:
     # Get the length of the chromosome
     chromosome_length = parent_one.shape[0]
 
@@ -30,7 +31,7 @@ def create_children_by_copying_crossover_part_from_parents(parent_one: np.ndarra
     return child_one, child_two, crossover_points
 
 
-def order_crossing(parent_one: np.ndarray, parent_two: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def order_crossing(parent_one: ndarray, parent_two: ndarray) -> tuple[ndarray, ndarray]:
     """
     Perform order crossing on the two parents.
     """
@@ -59,7 +60,7 @@ def order_crossing(parent_one: np.ndarray, parent_two: np.ndarray) -> tuple[np.n
     return child_one, child_two
 
 
-def partially_mapped_crossover(parent_one: np.ndarray, parent_two: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def partially_mapped_crossover(parent_one: ndarray, parent_two: ndarray) -> tuple[ndarray, ndarray]:
     """
     Perform partially mapped crossover on the two parents.
     """
@@ -93,7 +94,7 @@ def partially_mapped_crossover(parent_one: np.ndarray, parent_two: np.ndarray) -
     return child_one, child_two
 
 
-def uniform_like_crossover_two(parent_one: np.ndarray, parent_two: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def uniform_like_crossover_two(parent_one: ndarray, parent_two: ndarray) -> tuple[ndarray, ndarray]:
     """
     Performs Uniform-Like Crossover (ULX) on two parent chromosomes to generate two children.
     """
@@ -103,7 +104,7 @@ def uniform_like_crossover_two(parent_one: np.ndarray, parent_two: np.ndarray) -
     return child_one, child_two
 
 
-def uniform_like_crossover(parent_one: np.ndarray, parent_two: np.ndarray) -> np.ndarray:
+def uniform_like_crossover(parent_one: ndarray, parent_two: ndarray) -> ndarray:
     """
     Generates a child chromosome from two parents using the ULX algorithm.
     """

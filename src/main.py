@@ -4,6 +4,7 @@ from typing import Callable
 
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy import ndarray
 
 from src.chromosome import generate_random_chromosomes, check_if_chromosome_is_valid
 from src.mutation import apply_mutation_to_population, swap_mutation
@@ -16,7 +17,7 @@ from src.selection import roulette_wheel_selection, tournament_selection_two_tou
     tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk
 from src.serialization import write_chromosome_to_file
 
-variants = ["standard"]
+variants = ["standard", "baldwinian", "lamarckian"]
 fitness_functions = ["bulk_basic"]
 selection_functions = ["roulette_wheel", "tournament_two", "tournament_two_bulk", "tournament_k_bulk", "tournament_k_bulk_no_dups"]
 recombination_functions = ["order", "uniform_like", "partially_mapped"]
@@ -47,12 +48,12 @@ def main():
 
 def basic_evolution_loop(
     variant: str,
-    fitness_function: Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray],
-    selection_function: Callable[[np.ndarray, np.ndarray, int], np.ndarray],
-    recombination_function: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]],
-    mutation_function: Callable[[np.ndarray], np.ndarray],
+    fitness_function: Callable[[ndarray, ndarray, ndarray], ndarray],
+    selection_function: Callable[[ndarray, ndarray, int], ndarray],
+    recombination_function: Callable[[ndarray, ndarray], tuple[ndarray, ndarray]],
+    mutation_function: Callable[[ndarray], ndarray],
     testing: bool
-) -> tuple[np.ndarray, float, list[float], list[float]]:
+) -> tuple[ndarray, float, list[float], list[float]]:
     (flow_matrix, distance_matrix) = read_data()
 
     best_fitness_each_generation = []
@@ -133,7 +134,7 @@ def basic_evolution_loop(
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
 
-def translate_strings_to_functions(fitness_function: str, selection_function: str, recombination_function: str, mutation_function: str) -> tuple[Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray],Callable[[np.ndarray, np.ndarray, int], np.ndarray], Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]], Callable[[np.ndarray], np.ndarray]]:
+def translate_strings_to_functions(fitness_function: str, selection_function: str, recombination_function: str, mutation_function: str) -> tuple[Callable[[ndarray, ndarray, ndarray], ndarray],Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
     match fitness_function:
         case "bulk_basic":
             fitness_function = bulk_basic_fitness_function
@@ -168,7 +169,7 @@ def log_results(
         selection_function: str,
         recombination_function: str,
         mutation_function: str,
-        best_chromosome: np.ndarray,
+        best_chromosome: ndarray,
         best_fitness: float,
         total: float,
         date: str,
