@@ -5,7 +5,7 @@ This repository documents the progress of developing a evolutionary algorithm to
 
 The best results are in descending order, that is, the best result is shown on top.
 
-## 46892802
+## [46892802](https://github.com/RaoulLuque/SolvingQAPWithEvolution/tree/831c70e6a3e51d0eaf5ef58764b3edae08fe07fe)
 ```text
 Functions used:
 Variant: standard
@@ -28,9 +28,9 @@ Total time: 461.131915807724
 Average time per generation per individual: 0.0007684138774871827
 ```
 
-For the exact result see [best_result/best_result.txt](best_result/best_result.txt).
+For the exact result see [best_result/best_result.txt](https://github.com/RaoulLuque/SolvingQAPWithEvolution/blob/831c70e6a3e51d0eaf5ef58764b3edae08fe07fe/best_result/best_result.txt) from commit 831c70e.
 
-## 47625886
+## [47625886](https://github.com/RaoulLuque/SolvingQAPWithEvolution/tree/85fa67a4579f45fb683e58bdd0e1d28073cd3a78)
 ```text
 Functions used:
 Variant: standard
@@ -52,4 +52,4 @@ Best fitness: 47625886
 Total time: 489.8303732872009
 ```
 
-For the exact result see [best_result/best_result.txt](best_result/best_result.txt).
+For the exact result see [best_result/best_result.txt](https://github.com/RaoulLuque/SolvingQAPWithEvolution/blob/85fa67a4579f45fb683e58bdd0e1d28073cd3a78/best_result/best_result.txt) from commit 85fa67a.
