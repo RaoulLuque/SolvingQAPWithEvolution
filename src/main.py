@@ -35,13 +35,13 @@ def main():
     translate_strings_to_functions(fitness_function, selection_function, recombination_function, mutation_function)
 
     start_time = time.time()
-    best_chromosome, best_fitness, best_fitness_each_generation = basic_evolution_loop(variant, bulk_basic_fitness_function, roulette_wheel_selection, partially_mapped_crossover, swap_mutation, TESTING)
+    best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(variant, bulk_basic_fitness_function, roulette_wheel_selection, partially_mapped_crossover, swap_mutation, TESTING)
     end_time = time.time()
 
     total = end_time - start_time
     print(f"Total time: {total}")
 
-    log_results(variant, fitness_function, selection_function, recombination_function, mutation_function, best_chromosome, best_fitness, total, date)
+    log_results(variant, fitness_function, selection_function, recombination_function, mutation_function, best_chromosome, best_fitness, total, date, time_per_generation)
     plot_results(best_fitness_each_generation, variant, date)
 
 
@@ -52,10 +52,11 @@ def basic_evolution_loop(
     recombination_function: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]],
     mutation_function: Callable[[np.ndarray], np.ndarray],
     testing: bool
-) -> tuple[np.ndarray, float, list[float]]:
+) -> tuple[np.ndarray, float, list[float], list[float]]:
     (flow_matrix, distance_matrix) = read_data()
 
     best_fitness_each_generation = []
+    time_per_generation = []
 
     if testing:
         flow_matrix = flow_matrix[:TESTING_SIZE, :TESTING_SIZE]
@@ -66,12 +67,16 @@ def basic_evolution_loop(
     best_fitness_each_generation.append(np.min(population_fitness))
 
     for generation in range(NUMBER_OF_GENERATIONS):
+        start_time = time.time()
         if generation % 10 == 0:
             print(f"Generation {generation + 1}")
             print(f"Best fitness: {np.min(population_fitness)}")
 
             number_of_unique_permutations = len(np.unique(population, axis=0))
             print(f"Number of unique permutations: {number_of_unique_permutations}")
+
+            average_time_per_generation_per_individual = np.mean(time_per_generation) / POPULATION_SIZE
+            print(f"Average time per generation per individual: {average_time_per_generation_per_individual}")
 
         # Check if the fittest individual is a valid solution
         # assert check_if_chromosome_is_valid(population[np.argmin(population_fitness)])
@@ -101,10 +106,14 @@ def basic_evolution_loop(
         # Add the fittest individual to the list
         best_fitness_each_generation.append(np.min(population_fitness))
 
+        # Time generation
+        end_time = time.time()
+        time_per_generation.append(end_time - start_time)
+
     print(f"Best solution: {population[np.argmin(population_fitness)]} with fitness {np.min(population_fitness)}")
     write_chromosome_to_file("best_result", population[np.argmin(population_fitness)], np.min(population_fitness))
 
-    return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation
+    return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
 
 def translate_strings_to_functions(fitness_function: str, selection_function: str, recombination_function: str, mutation_function: str) -> tuple[Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray],Callable[[np.ndarray, np.ndarray, int], np.ndarray], Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]], Callable[[np.ndarray], np.ndarray]]:
@@ -136,7 +145,20 @@ def translate_strings_to_functions(fitness_function: str, selection_function: st
     return fitness_function, selection_function, recombination_function, mutation_function
 
 
-def log_results(variant, fitness_function: str, selection_function: str, recombination_function: str, mutation_function: str, best_chromosome: np.ndarray, best_fitness: float, total: float, date: str):
+def log_results(
+        variant: str,
+        fitness_function: str,
+        selection_function: str,
+        recombination_function: str,
+        mutation_function: str,
+        best_chromosome: np.ndarray,
+        best_fitness: float,
+        total: float,
+        date: str,
+        time_per_generation: list[float],
+):
+    average_time_per_generation_per_individual = np.mean(time_per_generation) / POPULATION_SIZE
+
     file_path = f"results/{date}_{variant}.txt"
     with open(file_path, "w") as file:
         file.write(f"Variant: {variant}\n")
@@ -158,6 +180,7 @@ def log_results(variant, fitness_function: str, selection_function: str, recombi
         file.write("Results:\n")
         file.write(f"Best fitness: {best_fitness}\n")
         file.write(f"Total time: {total}\n")
+        file.write(f"Average time per generation per individual: {average_time_per_generation_per_individual}\n")
         file.write(f"Best chromosome: \n")
         np.savetxt(f"{file_path}", best_chromosome, fmt="%d", delimiter=",")
 
