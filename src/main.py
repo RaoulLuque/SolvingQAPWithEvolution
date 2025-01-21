@@ -208,6 +208,7 @@ def plot_results(best_fitness_each_generation: list[float], variant: str, date: 
     plt.plot(best_fitness_each_generation)
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
+    plt.ylim(44759294, 53000000)
     plt.title("Fitness of the fittest individual in population over generations")
     plt.savefig(f"results/{date}_{variant}.png")
     plt.show()
