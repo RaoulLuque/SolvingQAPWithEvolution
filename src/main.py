@@ -43,7 +43,7 @@ def main():
     total = end_time - start_time
     print(f"Total time: {total}")
 
-    log_results(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, best_chromosome, best_fitness, total, date, time_per_generation)
+    log_results(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, best_chromosome, best_fitness, total, date, time_per_generation, best_fitness_each_generation)
     plot_results(best_fitness_each_generation, variant, date)
 
 
@@ -138,7 +138,7 @@ def basic_evolution_loop(
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
 
-def translate_strings_to_functions(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str) -> tuple[Callable[[ndarray, ndarray, ndarray], ndarray],Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
+def translate_strings_to_functions(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str) -> tuple[Callable[[ndarray, ndarray, ndarray], tuple[ndarray, ndarray]],Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
     fitness_function, selection_function, recombination_function, mutation_function = None, None, None, None
 
     match fitness_function_str:
@@ -192,6 +192,7 @@ def log_results(
         total: float,
         date: str,
         time_per_generation: list[float],
+        best_fitness_each_generation: list[float],
 ):
     average_time_per_generation_per_individual = (np.mean(time_per_generation) / POPULATION_SIZE) * 1000
 
@@ -225,6 +226,9 @@ def log_results(
         file.write(f"Best chromosome: \n")
         np.savetxt(f"{file_path}", best_chromosome, fmt="%d", delimiter=",")
 
+    log_file_path = f"results/{date}_{variant}.log"
+    with open(log_file_path, "w") as log_file:
+        log_file.write(f"Best fitness each generation: \n {best_fitness_each_generation}\n")
 
 def plot_results(best_fitness_each_generation: list[float], variant: str, date: str):
     plt.plot(best_fitness_each_generation)
