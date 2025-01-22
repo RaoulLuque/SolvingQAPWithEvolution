@@ -25,7 +25,7 @@ def two_opt(flow_matrix: ndarray, distance_matrix: ndarray, route: ndarray) -> n
                 # new_route = best_route.copy()
                 # new_route[i], new_route[j] = best_route[j], best_route[i]
                 # cost_delta = fitness_function.basic_fitness_function(flow_matrix, distance_matrix, new_route) - fitness_function.basic_fitness_function(flow_matrix, distance_matrix, best_route)
-                cost_delta = calculate_delta_cost_np(flow_matrix, distance_matrix, best_route, i, j)
+                cost_delta = calculate_delta_cost_numpy(flow_matrix, distance_matrix, best_route, i, j)
                 if cost_delta < 0:
                     # Perform the 2-opt swap
                     tmp = best_route[j]
