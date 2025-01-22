@@ -230,6 +230,7 @@ def log_results(
     with open(log_file_path, "w") as log_file:
         log_file.write(f"Best fitness each generation: \n {best_fitness_each_generation}\n")
 
+
 def plot_results(best_fitness_each_generation: list[float], variant: str, date: str):
     plt.plot(best_fitness_each_generation)
     plt.xlabel("Generation")
