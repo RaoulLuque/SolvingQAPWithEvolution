@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import ndarray
 
-from src.chromosome import generate_random_chromosomes, check_if_chromosome_is_valid
+from src.chromosome import generate_random_chromosomes
 from src.mutation import apply_mutation_to_population, swap_mutation
 from src.read_data import read_data
 from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES, \
@@ -37,7 +37,7 @@ def main():
     fitness_function, selection_function, recombination_function, mutation_function = translate_strings_to_functions(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str)
 
     start_time = time.time()
-    best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(variant, fitness_function, selection_function, recombination_function, mutation_function, TESTING)
+    best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(fitness_function, selection_function, recombination_function, mutation_function, TESTING)
     end_time = time.time()
 
     total = end_time - start_time
@@ -48,7 +48,6 @@ def main():
 
 
 def basic_evolution_loop(
-    variant: str,
     fitness_function: Callable[[ndarray, ndarray, ndarray, bool], tuple[ndarray, ndarray]],
     selection_function: Callable[[ndarray, ndarray, int], ndarray],
     recombination_function: Callable[[ndarray, ndarray], tuple[ndarray, ndarray]],
@@ -70,7 +69,7 @@ def basic_evolution_loop(
 
     for generation in range(NUMBER_OF_GENERATIONS):
         start_time = time.time()
-        if generation % (NUMBER_OF_GENERATIONS // 10) == 0:
+        if generation % (max(NUMBER_OF_GENERATIONS // 10, 1)) == 0:
             print(f"Generation {generation + 1}")
             print(f"Best fitness: {np.min(population_fitness)}")
 
@@ -80,9 +79,6 @@ def basic_evolution_loop(
             if len(time_per_generation) != 0:
                 average_time_per_generation_per_individual = np.mean(time_per_generation) / POPULATION_SIZE
                 print(f"Average time per generation per individual: {average_time_per_generation_per_individual}")
-
-        # Check if the fittest individual is a valid solution
-        # assert check_if_chromosome_is_valid(population[np.argmin(population_fitness)])
 
         # Take the fittest individual to secure a spot in the new generation
         index_of_fittest_individual = np.argmin(population_fitness)
@@ -117,7 +113,7 @@ def basic_evolution_loop(
 
         # Evaluate the new population (and possibly apply Lamarckian evolution)
         if generation == NUMBER_OF_GENERATIONS - 1:
-            population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, final=True)
+            population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, True)
         else:
             population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, False)
 
@@ -138,7 +134,7 @@ def basic_evolution_loop(
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
 
-def translate_strings_to_functions(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str) -> tuple[Callable[[ndarray, ndarray, ndarray], tuple[ndarray, ndarray]],Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
+def translate_strings_to_functions(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str) -> tuple[Callable[[ndarray, ndarray, ndarray, bool], tuple[ndarray, ndarray]], Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
     fitness_function, selection_function, recombination_function, mutation_function = None, None, None, None
 
     match fitness_function_str:
@@ -224,10 +220,12 @@ def log_results(
         file.write(f"Total time: {total} seconds\n")
         file.write(f"Average time per generation per individual: {average_time_per_generation_per_individual} milliseconds\n")
         file.write(f"Best chromosome: \n")
-        np.savetxt(f"{file_path}", best_chromosome, fmt="%d", delimiter=",")
+        best_chromosome = [int(gene) for gene in best_chromosome]
+        file.write(f"{best_chromosome}\n")
 
     log_file_path = f"results/{date}_{variant}.log"
     with open(log_file_path, "w") as log_file:
+        best_fitness_each_generation = [int(fitness) for fitness in best_fitness_each_generation]
         log_file.write(f"Best fitness each generation: \n {best_fitness_each_generation}\n")
 
 
