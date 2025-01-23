@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.fitness_function import basic_fitness_function
-from src.greedy_optimizations import calculate_delta_cost
+from src.evolutionary_tools.fitness_function import basic_fitness_function
+from src.evolutionary_tools.greedy_optimizations import calculate_delta_cost
 
 
 def test_calculate_delta_cost():

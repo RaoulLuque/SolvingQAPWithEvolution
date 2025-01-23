@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.chromosome import generate_random_chromosomes
-from src.fitness_function import bulk_basic_fitness_function, basic_fitness_function
+from src.evolutionary_tools.chromosome import generate_random_chromosomes
+from src.evolutionary_tools.fitness_function import bulk_basic_fitness_function, basic_fitness_function
 from src.read_data import read_data
 
 

@@ -6,16 +6,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import ndarray
 
-from src.chromosome import generate_random_chromosomes
-from src.greedy_optimizations import reset_cache, NUM_CACHE_HITS
-from src.mutation import apply_mutation_to_population, swap_mutation
+from src.evolutionary_tools.chromosome import generate_random_chromosomes
+from src.evolutionary_tools.greedy_optimizations import reset_cache, NUM_CACHE_HITS
+from src.evolutionary_tools.mutation import apply_mutation_to_population, swap_mutation
 from src.read_data import read_data
 from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES, \
     MUTATION_PROB, TOURNAMENT_SIZE
-from src.fitness_function import bulk_basic_fitness_function, bulk_basic_fitness_function_baldwinian, \
+from src.evolutionary_tools.fitness_function import bulk_basic_fitness_function, bulk_basic_fitness_function_baldwinian, \
     bulk_basic_fitness_function_lamarckian
-from src.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover, uniform_like_crossover_two
-from src.selection import roulette_wheel_selection, tournament_selection_two_tournament, \
+from src.evolutionary_tools.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover, uniform_like_crossover_two
+from src.evolutionary_tools.selection import roulette_wheel_selection, tournament_selection_two_tournament, \
     tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk, \
     tournament_selection_k_tournament_bulk_no_duplicates
 
@@ -49,7 +49,7 @@ def main():
 
 
 def basic_evolution_loop(
-    fitness_function: Callable[[ndarray, ndarray, ndarray, bool], tuple[ndarray, ndarray]],
+    fitness_function: Callable[[ndarray, ndarray, ndarray, bool, int], tuple[ndarray, ndarray]],
     selection_function: Callable[[ndarray, ndarray, int], ndarray],
     recombination_function: Callable[[ndarray, ndarray], tuple[ndarray, ndarray]],
     mutation_function: Callable[[ndarray], ndarray],
@@ -114,9 +114,9 @@ def basic_evolution_loop(
 
         # Evaluate the new population (and possibly apply Lamarckian evolution)
         if generation == NUMBER_OF_GENERATIONS - 1:
-            population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, True)
+            population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, True, generation + 1)
         else:
-            population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, False)
+            population, population_fitness = fitness_function(flow_matrix, distance_matrix, population, False, generation + 1)
 
         # Force the fittest individual to survive by replacing worst in new population with best from last population
         worst_individual = np.argmax(population_fitness)
@@ -140,7 +140,7 @@ def basic_evolution_loop(
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
 
-def translate_strings_to_functions(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str) -> tuple[Callable[[ndarray, ndarray, ndarray, bool], tuple[ndarray, ndarray]], Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
+def translate_strings_to_functions(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str) -> tuple[Callable[[ndarray, ndarray, ndarray, bool, int], tuple[ndarray, ndarray]], Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
     fitness_function, selection_function, recombination_function, mutation_function = None, None, None, None
 
     match fitness_function_str:

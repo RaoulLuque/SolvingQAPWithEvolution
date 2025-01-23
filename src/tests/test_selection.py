@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from src.selection import tournament_selection_two_tournament, tournament_selection_two_tournament_bulk
+from src.evolutionary_tools.selection import tournament_selection_two_tournament, tournament_selection_two_tournament_bulk
 
 
 def test_tournament_selection_two_tournament():

@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from src.recombine import partially_mapped_crossover, order_crossing
+from src.evolutionary_tools.recombine import partially_mapped_crossover, order_crossing
 
 
 def test_order_crossing():
