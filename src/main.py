@@ -17,12 +17,12 @@ from src.evolutionary_tools.fitness_function import bulk_basic_fitness_function,
 from src.evolutionary_tools.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover, uniform_like_crossover_two
 from src.evolutionary_tools.selection import roulette_wheel_selection, tournament_selection_two_tournament, \
     tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk, \
-    tournament_selection_k_tournament_bulk_no_duplicates
+    tournament_selection_k_tournament_bulk_no_duplicates, tournament_selection_k_tournament_no_duplicates_unbiased
 
 variants = ["standard", "baldwinian", "lamarckian"]
 fitness_functions = ["bulk_basic"]
-selection_functions = ["roulette_wheel", "tournament_two", "tournament_two_bulk", "tournament_k_bulk", "tournament_k_bulk_no_dups"]
-recombination_functions = ["order", "uniform_like", "partially_mapped"]
+selection_functions = ["roulette_wheel", "tournament_two", "tournament_two_bulk", "tournament_k_bulk", "tournament_k_bulk_no_dups", "tournament_k_no_dups_unbiased"]
+recombination_functions = ["order", "partially_mapped"]
 mutation_functions = ["swap"]
 
 
@@ -164,12 +164,12 @@ def translate_strings_to_functions(variant: str, fitness_function_str: str, sele
             selection_function = tournament_selection_k_tournament_bulk
         case "tournament_k_bulk_no_dups":
             selection_function = tournament_selection_k_tournament_bulk_no_duplicates
+        case "tournament_k_no_dups_unbiased":
+            selection_function = tournament_selection_k_tournament_no_duplicates_unbiased
 
     match recombination_function_str:
         case "order":
             recombination_function = order_crossing
-        case "uniform_like":
-            recombination_function = uniform_like_crossover_two
         case "partially_mapped":
             recombination_function = partially_mapped_crossover
 

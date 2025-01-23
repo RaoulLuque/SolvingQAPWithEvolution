@@ -100,3 +100,40 @@ def tournament_selection_k_tournament_bulk_no_duplicates(population: ndarray, po
     winners = np.where(winners_mask[:, np.newaxis], selected_fighters[::tournament_size], selected_fighters[1::tournament_size])
 
     return winners
+
+
+def tournament_selection_k_tournament_no_duplicates_unbiased(population: ndarray, population_fitness: ndarray, tournament_size: int, p: float = 0.5) -> ndarray:
+    """
+    A basic tournament selection algorithm.
+    :param population: The population of chromosomes on which to perform selection
+    :param population_fitness: The population's fitness values
+    :param tournament_size: The size of the tournament
+    :return: A numpy array of size len(population) containing the selected chromosomes
+    """
+    population_size = len(population)
+
+    # Create an array to hold the results
+    selected_fighters_indexes = np.empty(population_size * tournament_size, dtype=int)
+
+    # For each slot in the population, perform a random choice with no replacement
+    for i in range(population_size):
+        selected_fighters_indexes[i * tournament_size: (i + 1) * tournament_size] = np.random.choice(
+            population_size, tournament_size, replace=False
+        )
+
+    selected_fighters = population[selected_fighters_indexes]
+    selected_fighters_fitness = population_fitness[selected_fighters_indexes]
+
+    winners = np.empty_like(population)
+    for index in range(population_size):
+        fighters_for_this_tournament = selected_fighters[index * tournament_size: (index + 1) * tournament_size]
+        fighters_fitness_for_this_tournament = selected_fighters_fitness[index * tournament_size: (index + 1) * tournament_size]
+
+        sorted_fighters_for_this_tournament = fighters_for_this_tournament[np.argsort(fighters_fitness_for_this_tournament)]
+
+        current_index = 0
+        while np.random.rand() < p and current_index < tournament_size - 1:
+            current_index += 1
+        winners[index] = sorted_fighters_for_this_tournament[current_index]
+
+    return winners
