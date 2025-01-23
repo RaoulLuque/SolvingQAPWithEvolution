@@ -5,6 +5,30 @@ This repository documents the progress of developing a evolutionary algorithm to
 
 The best results are in descending order, that is, the best result is shown on top.
 
+## 44792836
+
+```text
+Functions used:
+Variant: lamarckian
+Fitness function: bulk_basic
+Selection function: roulette_wheel
+Recombination function: partially_mapped
+Mutation function: swap
+
+Hyperparameters:
+Population size: 20
+Number of generations: 1500
+Number of facilities: 256
+Mutation probability: 0.1
+Tournament size: 10
+Testing: False
+
+Results:
+Best fitness: 44792836
+Total time: 36927.23 seconds
+Average time per generation per individual: 1230.115 milliseconds
+```
+
 ## [44848506](https://github.com/RaoulLuque/SolvingQAPWithEvolution/tree/48a3a2939e831397f5e634c0fc9c8fdbe18e27cb)
 ```text
 Functions used:

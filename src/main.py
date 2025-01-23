@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from numpy import ndarray
 
 from src.chromosome import generate_random_chromosomes
+from src.greedy_optimizations import reset_cache, NUM_CACHE_HITS
 from src.mutation import apply_mutation_to_population, swap_mutation
 from src.read_data import read_data
 from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_SIZE, NUMBER_OF_FACILITIES, \
@@ -69,7 +70,7 @@ def basic_evolution_loop(
 
     for generation in range(NUMBER_OF_GENERATIONS):
         start_time = time.time()
-        if generation % (max(NUMBER_OF_GENERATIONS // 10, 1)) == 0:
+        if generation % 10 == 0:
             print(f"Generation {generation + 1}")
             print(f"Best fitness: {np.min(population_fitness)}")
 
@@ -129,6 +130,11 @@ def basic_evolution_loop(
         end_time = time.time()
         time_per_generation.append(end_time - start_time)
 
+        # Check if cache needs to be reset
+        if generation % 125 == 0:
+            reset_cache()
+
+    print(f"Number of cache hits: {NUM_CACHE_HITS}")
     print(f"Best solution: {population[np.argmin(population_fitness)]} with fitness {np.min(population_fitness)}")
 
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
