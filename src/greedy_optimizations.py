@@ -1,8 +1,11 @@
 import numpy as np
 from numpy import ndarray
 
-from src import fitness_function
 from src.config import NUMBER_OF_ITERATIONS_FOR_OPT
+
+
+CACHE_FOR_OPTIMIZATION = []
+NUM_CACHE_HITS = 0
 
 
 def two_opt(flow_matrix: ndarray, distance_matrix: ndarray, route: ndarray) -> ndarray:
@@ -13,11 +16,22 @@ def two_opt(flow_matrix: ndarray, distance_matrix: ndarray, route: ndarray) -> n
     :param distance_matrix: Two-dimensional numpy array representing the distance matrix.
     :return: Optimized route (chromosome) as a numpy array.
     """
+    global NUM_CACHE_HITS
     best_route = route.copy()
     n = len(route)
     improved = True
+    improved_changed = False
+    cache_hit = False
     number_of_iteration = 0
-    while improved and number_of_iteration < NUMBER_OF_ITERATIONS_FOR_OPT:
+
+    # Check for cache hit
+    for route in CACHE_FOR_OPTIMIZATION:
+        if np.array_equal(route, best_route):
+            NUM_CACHE_HITS += 1
+            improved_changed = True
+            cache_hit = True
+
+    while improved and number_of_iteration < NUMBER_OF_ITERATIONS_FOR_OPT and not cache_hit:
         number_of_iteration += 1
         improved = False
         for i in range(1, n - 1):
@@ -33,7 +47,11 @@ def two_opt(flow_matrix: ndarray, distance_matrix: ndarray, route: ndarray) -> n
                     best_route[i] = tmp
                     # print(f"Cost of best_route: {fitness_function.basic_fitness_function(flow_matrix, distance_matrix, best_route)}")
                     improved = True
+                    improved_changed = True
 
+    if not improved_changed:
+        # Cache the route if opt makes no sense
+        CACHE_FOR_OPTIMIZATION.append(best_route.copy())
     return best_route
 
 
@@ -87,3 +105,8 @@ def calculate_delta_cost_numpy(flow_matrix: ndarray, distance_matrix: ndarray, r
                    flow_k_j * (distance_c_a - distance_c_b))
 
     return delta
+
+
+def reset_cache():
+    global CACHE_FOR_OPTIMIZATION
+    CACHE_FOR_OPTIMIZATION = []
