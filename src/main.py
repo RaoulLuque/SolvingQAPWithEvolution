@@ -14,7 +14,7 @@ from src.config import POPULATION_SIZE, NUMBER_OF_GENERATIONS, TESTING, TESTING_
     MUTATION_PROB, TOURNAMENT_SIZE
 from src.evolutionary_tools.fitness_function import bulk_basic_fitness_function, bulk_basic_fitness_function_baldwinian, \
     bulk_basic_fitness_function_lamarckian
-from src.evolutionary_tools.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover, uniform_like_crossover_two
+from src.evolutionary_tools.recombine import recombine_chromosomes, order_crossing, partially_mapped_crossover
 from src.evolutionary_tools.selection import roulette_wheel_selection, tournament_selection_two_tournament, \
     tournament_selection_two_tournament_bulk, tournament_selection_k_tournament_bulk, \
     tournament_selection_k_tournament_bulk_no_duplicates, tournament_selection_k_tournament_no_duplicates_unbiased
@@ -35,16 +35,24 @@ def main():
     mutation_function_str = "swap"
     date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
-    fitness_function, selection_function, recombination_function, mutation_function = translate_strings_to_functions(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str)
+    run_evolution_algorithm(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, date)
+
+
+def run_evolution_algorithm(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str, date: str):
+    fitness_function, selection_function, recombination_function, mutation_function = translate_strings_to_functions(
+        variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str)
 
     start_time = time.time()
-    best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(fitness_function, selection_function, recombination_function, mutation_function, TESTING)
+    best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(
+        fitness_function, selection_function, recombination_function, mutation_function, TESTING)
     end_time = time.time()
 
     total = end_time - start_time
     print(f"Total time: {total}")
 
-    log_results(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, best_chromosome, best_fitness, total, date, time_per_generation, best_fitness_each_generation)
+    log_results(variant, fitness_function_str, selection_function_str, recombination_function_str,
+                mutation_function_str, best_chromosome, best_fitness, total, date, time_per_generation,
+                best_fitness_each_generation)
     plot_results(best_fitness_each_generation, variant, date)
 
 
