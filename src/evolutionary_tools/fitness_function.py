@@ -7,7 +7,7 @@ from src.evolutionary_tools.greedy_optimizations import two_opt
 
 def basic_fitness_function(flow_matrix: ndarray, distance_matrix: ndarray, chromosome: ndarray) -> float:
     """
-    Calculate the fitness value of a chromosome.
+    Calculate the fitness value of a single chromosome.
     :param flow_matrix: Two-dimensional numpy array representing the flow matrix
     :param distance_matrix: Two-dimensional numpy array representing the distance matrix
     :param chromosome: One-dimensional numpy array representing the chromosome
@@ -34,7 +34,8 @@ def bulk_basic_fitness_function_baldwinian(flow_matrix: ndarray, distance_matrix
     :param flow_matrix: Two-dimensional numpy array representing the flow matrix.
     :param distance_matrix: Two-dimensional numpy array representing the distance matrix.
     :param chromosomes: Three-dimensional numpy array representing the chromosomes.
-    :param final: Boolean indicating if this is the final fitness calculation. In case of final == True, the optimized chromosomes will be returned instead
+    :param final: Boolean indicating if this is the final fitness calculation.
+    In the case of final == True, the optimized chromosomes will be returned instead.
     :return: One-dimensional numpy array containing the fitness values of the chromosomes.
     """
     optimized_routes = chromosomes.copy()

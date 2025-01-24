@@ -10,7 +10,8 @@ NUM_CACHE_HITS = 0
 
 def two_opt(flow_matrix: ndarray, distance_matrix: ndarray, route: ndarray) -> ndarray:
     """
-    Perform a 2-opt optimization on a given route.
+    Perform a 2-opt optimization on a given route using delta costs to determine if a swap is beneficial and
+    caching unoptimizable routes for future function calls.
     :param route: One-dimensional numpy array representing a single route (chromosome).
     :param flow_matrix: Two-dimensional numpy array representing the flow matrix.
     :param distance_matrix: Two-dimensional numpy array representing the distance matrix.
@@ -52,6 +53,16 @@ def two_opt(flow_matrix: ndarray, distance_matrix: ndarray, route: ndarray) -> n
 
 
 def calculate_delta_cost(flow_matrix: ndarray, distance_matrix: ndarray, route: ndarray, i: int, j: int) -> float:
+    """
+    Calculate the delta cost of a 2-opt swap. That is, the resulting change in cost if the i-th and j-th elements in the
+    route are swapped.
+    :param flow_matrix: Two-dimensional numpy array representing the flow matrix.
+    :param distance_matrix: Two-dimensional numpy array representing the distance matrix.
+    :param route: One-dimensional numpy array representing the route (chromosome).
+    :param i: Index of the first element to swap.
+    :param j: Index of the second element to swap.
+    :return: The delta cost of the swap.
+    """
     n = len(route)
     if i == j:
         return 0
@@ -72,6 +83,16 @@ def calculate_delta_cost(flow_matrix: ndarray, distance_matrix: ndarray, route: 
 
 
 def calculate_delta_cost_numpy(flow_matrix: ndarray, distance_matrix: ndarray, route: ndarray, i: int, j: int) -> float:
+    """
+    Calculate the delta cost of a 2-opt swap using NumPy to vectorize the operation. That is, the resulting change in cost if the i-th and j-th elements in the
+    route are swapped.
+    :param flow_matrix: Two-dimensional numpy array representing the flow matrix.
+    :param distance_matrix: Two-dimensional numpy array representing the distance matrix.
+    :param route: One-dimensional numpy array representing the route (chromosome).
+    :param i: Index of the first element to swap.
+    :param j: Index of the second element to swap.
+    :return: The delta cost of the swap.
+    """
     if i == j:
         return 0
 
@@ -103,5 +124,8 @@ def calculate_delta_cost_numpy(flow_matrix: ndarray, distance_matrix: ndarray, r
 
 
 def reset_cache():
+    """
+    Reset the cache to avoid memory issues.
+    """
     global CACHE_FOR_OPTIMIZATION
     CACHE_FOR_OPTIMIZATION = []

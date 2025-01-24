@@ -10,10 +10,6 @@ def apply_mutation_to_population(population: ndarray, mutation_function: callabl
     :param mutation_rate: The mutation rate
     :return: The mutated population
     """
-    # mutation_mask = np.random.rand(population.shape[0]) < mutation_rate
-    # population[mutation_mask] = np.array([mutation_function(chromosome) for chromosome in population[mutation_mask]])
-    # return population
-
     for chromosome_index in range(population.shape[0]):
         if np.random.rand() < mutation_rate:
             population[chromosome_index] = mutation_function(population[chromosome_index])

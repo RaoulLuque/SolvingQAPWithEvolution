@@ -9,6 +9,9 @@ PROBLEMS_TO_BENCHMARK = ["bur26a.dat", "chr18b.dat", "nug16a.dat", "tai60a.dat",
 
 
 def main():
+    """
+    Main function to run the benchmark
+    """
     fitness_function_str = "bulk_basic"
     selection_function_str = "roulette_wheel"
     recombination_function_str = "partially_mapped"
@@ -32,6 +35,11 @@ def main():
 
 
 def monkeypatch_config(key, value):
+    """
+    Monkeypatch the config module and all modules that imported it. This is necessary to change the config values for the benchmark
+    :param key: The key/name of the config value to change
+    :param value: The desired value of the config key
+    """
     # Patch the value in the config module
     setattr(config, key, value)
 

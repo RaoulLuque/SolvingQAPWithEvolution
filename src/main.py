@@ -27,6 +27,9 @@ mutation_functions = ["swap"]
 
 
 def main():
+    """
+    Main function to run the evolutionary algorithm
+    """
     # Set config
     variant = "lamarckian"
     fitness_function_str = "bulk_basic"
@@ -39,7 +42,27 @@ def main():
     run_evolution_algorithm(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, date, "tai256c.dat", "results")
 
 
-def run_evolution_algorithm(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str, date: str, problem: str, folder: str):
+def run_evolution_algorithm(
+        variant: str,
+        fitness_function_str: str,
+        selection_function_str: str,
+        recombination_function_str: str,
+        mutation_function_str: str,
+        date: str,
+        problem: str,
+        folder: str
+):
+    """
+    Run the evolutionary algorithm with the given parameters and log the results.
+    :param variant: Variant of the evolutionary algorithm to be used
+    :param fitness_function_str: Fitness function to be used provided as a string
+    :param selection_function_str: Selection function to be used provided as a string
+    :param recombination_function_str: Recombination function to be used provided as a string
+    :param mutation_function_str: Mutation function to be used provided as a string
+    :param date: Current date and time for logging
+    :param problem: The file name of the problem to be solved
+    :param folder: The folder name for the logs and plots
+    """
     fitness_function, selection_function, recombination_function, mutation_function = translate_strings_to_functions(
         variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str)
 
@@ -65,6 +88,18 @@ def basic_evolution_loop(
     testing: bool,
     problem: str
 ) -> tuple[ndarray, float, list[float], list[float]]:
+    """
+    Basic evolutionary loop for the algorithm
+    :param fitness_function: Fitness function to be used
+    :param selection_function: Selection function to be used
+    :param recombination_function: Recombination function to be used
+    :param mutation_function: Mutation function to be used
+    :param testing: Whether to run the algorithm in testing mode
+    :param problem: Name of the file containing the problem to be solved
+    :return: A four tuple containing, the fittest individuals genes,
+    the fitness of the fittest individual, a list of the best fitness each generation
+    and a list of the time per generation
+    """
     (flow_matrix, distance_matrix) = read_data(problem)
 
     best_fitness_each_generation = []
@@ -150,7 +185,22 @@ def basic_evolution_loop(
     return population[np.argmin(population_fitness)], np.min(population_fitness), best_fitness_each_generation, time_per_generation
 
 
-def translate_strings_to_functions(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str) -> tuple[Callable[[ndarray, ndarray, ndarray, bool, int], tuple[ndarray, ndarray]], Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
+def translate_strings_to_functions(
+        variant: str,
+        fitness_function_str: str,
+        selection_function_str: str,
+        recombination_function_str: str,
+        mutation_function_str: str
+) -> tuple[Callable[[ndarray, ndarray, ndarray, bool, int], tuple[ndarray, ndarray]], Callable[[ndarray, ndarray, int], ndarray], Callable[[ndarray, ndarray], tuple[ndarray, ndarray]], Callable[[ndarray], ndarray]]:
+    """
+    Translate the strings to the corresponding functions
+    :param variant: Variant of evolutionary algorithm to be used. Used to determine fitness function
+    :param fitness_function_str: Fitness function to be used, provided as a string
+    :param selection_function_str: Selection function to be used, provided as a string
+    :param recombination_function_str: Recombination function to be used, provided as a string
+    :param mutation_function_str: Mutation function to be used, provided as a string
+    :return: Four tuple of the fitness, selection, recombination and mutation function
+    """
     fitness_function, selection_function, recombination_function, mutation_function = None, None, None, None
 
     match fitness_function_str:
@@ -207,6 +257,21 @@ def log_results(
         time_per_generation: list[float],
         best_fitness_each_generation: list[float],
 ):
+    """
+    Log the results of the evolutionary algorithm
+    :param folder: Name of folder to save the results in
+    :param variant: Variant of the evolutionary algorithm used
+    :param fitness_function: Fitness function used, provided as a string
+    :param selection_function: Selection function used, provided as a string
+    :param recombination_function: Recombination function used, provided as a string
+    :param mutation_function: Mutation function used, provided as a string
+    :param best_chromosome: The genes of the fittest individual
+    :param best_fitness: The fitness of the fittest individual
+    :param total: Total time taken to run the algorithm
+    :param date: Current date and time for logging
+    :param time_per_generation: List of the time taken per generation
+    :param best_fitness_each_generation: List of the best fitness each generation
+    """
     average_time_per_generation_per_individual = (np.mean(time_per_generation) / POPULATION_SIZE) * 1000
 
     # Cutoff total at 2 decimals
@@ -247,6 +312,13 @@ def log_results(
 
 
 def plot_results(folder: str, best_fitness_each_generation: list[float], variant: str, date: str):
+    """
+    Plot the results of the evolutionary algorithm
+    :param folder: Name of folder to save the plot in
+    :param best_fitness_each_generation: List of the best fitness each generation
+    :param variant: Variant of the evolutionary algorithm used
+    :param date: Current date and time for logging
+    """
     plt.plot(best_fitness_each_generation)
     plt.xlabel("Generation")
     plt.ylabel("Fitness")

@@ -8,6 +8,7 @@ def roulette_wheel_selection(population: ndarray, population_fitness: ndarray, t
     It selects chromosomes based on their fitness values, see https://en.wikipedia.org/wiki/Fitness_proportionate_selection
     :param population: The population of chromosomes on which to perform selection
     :param population_fitness: The population's fitness values
+    :param tournament_size: Unused for this function
     :return: A numpy array of size len(population) containing the selected chromosomes (possibly containing duplicates)
     """
     total_fitness = np.sum(population_fitness)
@@ -18,10 +19,10 @@ def roulette_wheel_selection(population: ndarray, population_fitness: ndarray, t
 
 def tournament_selection_two_tournament(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
-    A basic tournament selection algorithm.
+    A basic biased tournament selection algorithm. The tournament size is fixed at 2. There might be fights of the same chromosome with itself.
     :param population: The population of chromosomes on which to perform selection
     :param population_fitness: The population's fitness values
-    :param tournament_size: The size of the tournament
+    :param tournament_size: The size of the tournament. Unused for this function
     :return: A numpy array of size len(population) containing the selected chromosomes
     """
     selected_chromosomes = np.empty_like(population)
@@ -39,10 +40,11 @@ def tournament_selection_two_tournament(population: ndarray, population_fitness:
 
 def tournament_selection_two_tournament_bulk(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
-    A basic tournament selection algorithm.
+    A basic biased tournament selection algorithm optimized for vectorized computation.
+    The tournament size is fixed at 2. There might be fights of the same chromosome with itself.
     :param population: The population of chromosomes on which to perform selection
     :param population_fitness: The population's fitness values
-    :param tournament_size: The size of the tournament
+    :param tournament_size: The size of the tournament. Unused for this function
     :return: A numpy array of size len(population) containing the selected chromosomes
     """
     selected_fighters_indexes = np.random.choice(len(population), 2 * len(population), replace=True)
@@ -58,7 +60,8 @@ def tournament_selection_two_tournament_bulk(population: ndarray, population_fit
 
 def tournament_selection_k_tournament_bulk(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
-    A basic tournament selection algorithm.
+    A basic biased tournament selection algorithm optimized for vectorized computation.
+    The tournament size is set by tournament_size. There might be fights of the same chromosome with itself.
     :param population: The population of chromosomes on which to perform selection
     :param population_fitness: The population's fitness values
     :param tournament_size: The size of the tournament
@@ -76,7 +79,8 @@ def tournament_selection_k_tournament_bulk(population: ndarray, population_fitne
 
 def tournament_selection_k_tournament_bulk_no_duplicates(population: ndarray, population_fitness: ndarray, tournament_size: int) -> ndarray:
     """
-    A basic tournament selection algorithm.
+    A basic biased tournament selection algorithm optimized for vectorized computation.
+    The tournament size is set by tournament_size. There will not be fights of the same chromsome with itself.
     :param population: The population of chromosomes on which to perform selection
     :param population_fitness: The population's fitness values
     :param tournament_size: The size of the tournament
@@ -104,7 +108,10 @@ def tournament_selection_k_tournament_bulk_no_duplicates(population: ndarray, po
 
 def tournament_selection_k_tournament_no_duplicates_unbiased(population: ndarray, population_fitness: ndarray, tournament_size: int, p: float = 0.5) -> ndarray:
     """
-    A basic tournament selection algorithm.
+    A basic unbiased tournament selection algorithm optimized for vectorized computation.
+    The tournament size is set by tournament_size. There will not be fights of the same chromsome with itself.
+    The winner of a tournament is not selected as the fittest individual. Instead, the winner is the fittest individual with a probability of p.
+    If it is not chosen, the second fittest individual is chosen with a probability of p and so on.
     :param population: The population of chromosomes on which to perform selection
     :param population_fitness: The population's fitness values
     :param tournament_size: The size of the tournament

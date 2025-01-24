@@ -5,16 +5,30 @@ import numpy as np
 from numpy import ndarray
 
 
-def recombine_chromosomes(selected_chromosomes: ndarray, recombination_function: Callable[[ndarray, ndarray], tuple[ndarray, ndarray]]) -> ndarray:
-    new_population = np.empty_like(selected_chromosomes)
-    for i in range(0, len(selected_chromosomes), 2):
-        child_one, child_two = recombination_function(selected_chromosomes[i], selected_chromosomes[i + 1])
+def recombine_chromosomes(chromosomes: ndarray, recombination_function: Callable[[ndarray, ndarray], tuple[ndarray, ndarray]]) -> ndarray:
+    """
+    Recombine the provided chromosomes (parents) to a new population of the same size using the provided recombination function.
+    :param chromosomes: The chromosomes to recombine
+    :param recombination_function: The recombination function to use
+    :return: The new population
+    """
+    new_population = np.empty_like(chromosomes)
+    for i in range(0, len(chromosomes), 2):
+        child_one, child_two = recombination_function(chromosomes[i], chromosomes[i + 1])
         new_population[i] = child_one
         new_population[i + 1] = child_two
     return new_population
 
 
 def create_children_by_copying_crossover_part_from_parents(parent_one: ndarray, parent_two: ndarray) -> tuple[ndarray, ndarray, ndarray]:
+    """
+    Create two children by copying the crossover part from the parents. That is, generate two crossover points and copy the
+    first parents genes in this crossover range to the first child and the second parents genes in this crossover range to
+    the second child. The remaining genes of the children are filled with -1.
+    :param parent_one: The first parent to copy over
+    :param parent_two: The second parent to copy over
+    :return: A three tuple containing the first child, the second child and an array with the two crossover points (sorted)
+    """
     # Get the length of the chromosome
     chromosome_length = parent_one.shape[0]
 
@@ -33,7 +47,11 @@ def create_children_by_copying_crossover_part_from_parents(parent_one: ndarray, 
 
 def order_crossing(parent_one: ndarray, parent_two: ndarray) -> tuple[ndarray, ndarray]:
     """
-    Perform order crossing on the two parents.
+    Perform order crossing on the two parents. See https://en.wikipedia.org/wiki/Crossover_(evolutionary_algorithm)#Order_crossover_(OX1)
+    (two point order crossover).
+    :param parent_one: The first parent
+    :param parent_two: The second parent
+    :return: A tuple containing the two resulting children
     """
     chromosome_length = parent_one.shape[0]
 
@@ -62,7 +80,10 @@ def order_crossing(parent_one: ndarray, parent_two: ndarray) -> tuple[ndarray, n
 
 def partially_mapped_crossover(parent_one: ndarray, parent_two: ndarray) -> tuple[ndarray, ndarray]:
     """
-    Perform partially mapped crossover on the two parents.
+    Perform partially mapped crossover on the two parents. See https://en.wikipedia.org/wiki/Crossover_(evolutionary_algorithm)#Partially_mapped_crossover_(PMX)
+    :param parent_one: The first parent
+    :param parent_two: The second parent
+    :return: A tuple containing the two resulting children
     """
     chromosome_length = parent_one.shape[0]
 
