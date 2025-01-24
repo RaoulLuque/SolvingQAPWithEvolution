@@ -36,25 +36,25 @@ def main():
     date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
     # Invoke algorithm
-    run_evolution_algorithm(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, date)
+    run_evolution_algorithm(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, date, "tai256c.dat", "results")
 
 
-def run_evolution_algorithm(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str, date: str):
+def run_evolution_algorithm(variant: str, fitness_function_str: str, selection_function_str: str, recombination_function_str: str, mutation_function_str: str, date: str, problem: str, folder: str):
     fitness_function, selection_function, recombination_function, mutation_function = translate_strings_to_functions(
         variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str)
 
     start_time = time.time()
     best_chromosome, best_fitness, best_fitness_each_generation, time_per_generation = basic_evolution_loop(
-        fitness_function, selection_function, recombination_function, mutation_function, TESTING)
+        fitness_function, selection_function, recombination_function, mutation_function, TESTING, problem)
     end_time = time.time()
 
     total = end_time - start_time
     print(f"Total time: {total}")
 
-    log_results(variant, fitness_function_str, selection_function_str, recombination_function_str,
+    log_results(folder, variant, fitness_function_str, selection_function_str, recombination_function_str,
                 mutation_function_str, best_chromosome, best_fitness, total, date, time_per_generation,
                 best_fitness_each_generation)
-    plot_results(best_fitness_each_generation, variant, date)
+    plot_results(folder, best_fitness_each_generation, variant, date)
 
 
 def basic_evolution_loop(
@@ -62,9 +62,10 @@ def basic_evolution_loop(
     selection_function: Callable[[ndarray, ndarray, int], ndarray],
     recombination_function: Callable[[ndarray, ndarray], tuple[ndarray, ndarray]],
     mutation_function: Callable[[ndarray], ndarray],
-    testing: bool
+    testing: bool,
+    problem: str
 ) -> tuple[ndarray, float, list[float], list[float]]:
-    (flow_matrix, distance_matrix) = read_data("tai256c.dat")
+    (flow_matrix, distance_matrix) = read_data(problem)
 
     best_fitness_each_generation = []
     time_per_generation = []
@@ -193,6 +194,7 @@ def translate_strings_to_functions(variant: str, fitness_function_str: str, sele
 
 
 def log_results(
+        folder: str,
         variant: str,
         fitness_function: str,
         selection_function: str,
@@ -211,7 +213,7 @@ def log_results(
     total = round(total, 2)
     average_time_per_generation_per_individual = round(average_time_per_generation_per_individual, 3)
 
-    file_path = f"results/{date}_{variant}.txt"
+    file_path = f"{folder}/{date}_{variant}.txt"
     with open(file_path, "w") as file:
         file.write("Functions used:\n")
         file.write(f"Variant: {variant}\n")
@@ -238,19 +240,19 @@ def log_results(
         best_chromosome = [int(gene) for gene in best_chromosome]
         file.write(f"{best_chromosome}\n")
 
-    log_file_path = f"results/{date}_{variant}.log"
+    log_file_path = f"{folder}/{date}_{variant}.log"
     with open(log_file_path, "w") as log_file:
         best_fitness_each_generation = [int(fitness) for fitness in best_fitness_each_generation]
         log_file.write(f"Best fitness each generation: \n {best_fitness_each_generation}\n")
 
 
-def plot_results(best_fitness_each_generation: list[float], variant: str, date: str):
+def plot_results(folder: str, best_fitness_each_generation: list[float], variant: str, date: str):
     plt.plot(best_fitness_each_generation)
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
     plt.ylim(44759294, 53000000)
     plt.title("Fitness of the fittest individual in population over generations")
-    plt.savefig(f"results/{date}_{variant}.png")
+    plt.savefig(f"{folder}/{date}_{variant}.png")
     plt.show()
 
 
