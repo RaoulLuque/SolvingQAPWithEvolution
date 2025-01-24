@@ -4,12 +4,11 @@ import sys
 from src.main import run_evolution_algorithm
 from src import config
 
-VARIANTS_FOR_BENCHMARK = ["baldwinian"]
+VARIANTS_FOR_BENCHMARK = ["standard", "baldwinian", "lamarckian"]
 PROBLEMS_TO_BENCHMARK = ["bur26a.dat", "chr18b.dat", "nug16a.dat", "tai60a.dat", "tai256c.dat"]
 
 
 def main():
-    # Set config
     fitness_function_str = "bulk_basic"
     selection_function_str = "roulette_wheel"
     recombination_function_str = "partially_mapped"
