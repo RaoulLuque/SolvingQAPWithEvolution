@@ -35,6 +35,7 @@ def main():
     mutation_function_str = "swap"
     date = datetime.datetime.now().strftime('%Y_%m_%dT%H_%M_%S')
 
+    # Invoke algorithm
     run_evolution_algorithm(variant, fitness_function_str, selection_function_str, recombination_function_str, mutation_function_str, date)
 
 
