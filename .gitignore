@@ -15,3 +15,4 @@ wheels/
 # Result files
 /results
 /old_results
+/results_benchmark

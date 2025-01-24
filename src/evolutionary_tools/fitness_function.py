@@ -37,7 +37,7 @@ def bulk_basic_fitness_function_baldwinian(flow_matrix: ndarray, distance_matrix
     :param final: Boolean indicating if this is the final fitness calculation. In case of final == True, the optimized chromosomes will be returned instead
     :return: One-dimensional numpy array containing the fitness values of the chromosomes.
     """
-    optimized_routes = np.zeros(chromosomes.shape[0])
+    optimized_routes = chromosomes.copy()
 
     progress_bar_range = enumerate(tqdm(chromosomes, desc=f"Generation: {generation}"))
     for index, chromosome in progress_bar_range:
