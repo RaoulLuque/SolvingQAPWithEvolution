@@ -55,7 +55,7 @@ def basic_evolution_loop(
     mutation_function: Callable[[ndarray], ndarray],
     testing: bool
 ) -> tuple[ndarray, float, list[float], list[float]]:
-    (flow_matrix, distance_matrix) = read_data()
+    (flow_matrix, distance_matrix) = read_data("tai256c.dat")
 
     best_fitness_each_generation = []
     time_per_generation = []

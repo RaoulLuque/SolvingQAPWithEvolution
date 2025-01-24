@@ -14,3 +14,4 @@ wheels/
 
 # Result files
 /results
+/old_results
