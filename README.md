@@ -1,9 +1,9 @@
-# Solving [QAP](https://en.wikipedia.org/wiki/Quadratic_assignment_problem) with evolutionary algorithms
-This repository documents the progress of developing a evolutionary algorithm to solve the QAP. The goal was to find a solution as close as possible to 44759294. This work is also accompanied by a written work, see Nothing to see here yet.
+# Solving QAP with evolutionary algorithms
+This repository documents the progress of developing an evolutionary algorithm to solve the [Quadratic Assignment Problem (QAP)](https://en.wikipedia.org/wiki/Quadratic_assignment_problem). The goal was to find a solution to the `tai256c` instance from the [QAPLIB](https://coral.ise.lehigh.edu/data-sets/qaplib/) as close to 44759294 as possible. This work is also accompanied by a written work, see [SolvingQAPWithEvolution](solving_qap_with_evolution.pdf).
 
 # Best Results
 
-The best results are in descending order, that is, the best result is shown on top.
+The following are the best results obtained with the details and parameters used to obtain these results. They are presented in descending order, that is, the best result is shown on top.
 
 ## [44792836](https://github.com/RaoulLuque/SolvingQAPWithEvolution/tree/0a10e2c95465b3e258575c765e1a0f9d1abe7dac)
 
