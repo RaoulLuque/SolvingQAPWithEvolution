@@ -21,6 +21,7 @@ def main():
     axs[0, 0].set_xlabel('Generation')
     axs[0, 0].set_ylabel('Fittest Individual')
     axs[0, 0].yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    axs[0, 0].set_xlim(-3, len(data_standard) - 1)
 
     # Plot for Baldwinian
     axs[0, 1].plot(data_baldwinian)
@@ -30,6 +31,7 @@ def main():
     axs[0, 1].axhline(y=4.4, color='r', linestyle='--', label='Best Known')
     axs[0, 1].legend()
     axs[0, 1].yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    axs[0, 1].set_xlim(-3, len(data_baldwinian) - 1)
 
     # Plot for Lamarckian
     axs[1, 0].plot(data_lamarckian)
@@ -39,6 +41,7 @@ def main():
     axs[1, 0].axhline(y=4.4, color='r', linestyle='--', label='Best Known')
     axs[1, 0].legend()
     axs[1, 0].yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    axs[1, 0].set_xlim(-3, len(data_lamarckian) - 1)
 
     # Combined plot
     axs[1, 1].plot(data_standard, label='Standard')
@@ -50,6 +53,7 @@ def main():
     axs[1, 1].axhline(y=4.4, color='r', linestyle='--', label='Best Known')
     axs[1, 1].legend()
     axs[1, 1].yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    axs[1, 1].set_xlim(-3, len(data_standard) - 1)
 
     plt.tight_layout()
     # Save plot to disk
@@ -69,6 +73,7 @@ def main():
     ax_best.axhline(y=4.475, color='r', linestyle='--', label='Best Known')
     ax_best.legend()
     ax_best.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax_best.set_xlim(-3, len(data_best) - 1)
 
     plt.tight_layout()
     # Save plot to disk
